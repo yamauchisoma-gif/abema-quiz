@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABEMA 広告営業 用語クイズ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic UI',sans-serif;color:#111;overflow-x:hidden;}
+
+/* ── ヘッダー ── */
+.header{position:sticky;top:0;z-index:100;background:white;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;}
+.header-logo{display:flex;align-items:center;gap:8px;}
+.logo-badge{background:#00b4ff;color:white;font-size:12px;font-weight:700;padding:3px 9px;border-radius:4px;}
+.logo-title{font-size:13px;color:#666;font-weight:500;}
+.hamburger{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;border-radius:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:#333;border-radius:2px;transition:all 0.25s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* ── ドロワーメニュー ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;right:-320px;width:300px;max-width:90vw;height:100%;background:white;z-index:201;display:flex;flex-direction:column;transition:right 0.25s ease;box-shadow:-4px 0 20px rgba(0,0,0,0.12);}
+.drawer.open{right:0;}
+.drawer-header{padding:1rem 1.25rem;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;}
+.drawer-title{font-size:15px;font-weight:700;}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:#888;line-height:1;}
+.drawer-menu{flex:1;overflow-y:auto;padding:0.75rem 0;}
+.drawer-item{display:flex;align-items:center;gap:12px;padding:0.85rem 1.25rem;cursor:pointer;font-size:14px;color:#333;transition:background 0.12s;}
+.drawer-item:hover{background:#f5f5f5;}
+.drawer-item.active{background:#e8f5ff;color:#00b4ff;font-weight:600;}
+.drawer-item-icon{font-size:18px;width:24px;text-align:center;}
+.drawer-divider{height:1px;background:#eee;margin:0.5rem 0;}
+.drawer-user{padding:1rem 1.25rem;border-top:1px solid #eee;font-size:13px;color:#888;}
+.drawer-user strong{color:#111;display:block;margin-bottom:4px;}
+.drawer-logout{font-size:12px;color:#e53935;background:none;border:1px solid #fcc;border-radius:20px;padding:3px 10px;cursor:pointer;font-family:inherit;margin-top:6px;}
+
+/* ── メインコンテンツ ── */
+#main{max-width:680px;margin:0 auto;padding:1rem;}
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ── カード共通 ── */
+.card{background:white;border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+
+/* ── ログイン ── */
+.login-title{font-size:20px;font-weight:700;margin-bottom:0.4rem;}
+.login-desc{font-size:14px;color:#666;line-height:1.65;margin-bottom:1.5rem;}
+.input-label{font-size:13px;font-weight:600;color:#444;margin-bottom:5px;display:block;}
+.name-input{width:100%;padding:0.8rem 1rem;font-size:15px;border:1.5px solid #ddd;border-radius:10px;font-family:inherit;outline:none;transition:border-color 0.15s;margin-bottom:0.75rem;}
+.name-input:focus{border-color:#00b4ff;}
+.login-btn,.primary-btn{width:100%;padding:0.9rem;background:#00b4ff;color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;}
+.primary-btn:hover,.login-btn:hover{opacity:0.88;}
+.login-err{font-size:13px;color:#e53935;margin-top:0.4rem;display:none;}
+
+/* ── ホーム ── */
+.user-greeting{font-size:17px;font-weight:700;margin-bottom:1rem;}
+.user-greeting span{color:#00b4ff;}
+.section-title{font-size:14px;font-weight:700;color:#111;margin-bottom:0.75rem;display:flex;align-items:center;gap:6px;}
+.prev-result-summary{display:flex;gap:8px;margin-bottom:1rem;}
+.prs-box{flex:1;background:#f7f7f5;border-radius:10px;padding:0.7rem;text-align:center;}
+.prs-num{font-size:22px;font-weight:700;}
+.prs-lbl{font-size:11px;color:#999;margin-top:2px;}
+.prs-c{color:#4caf50;}.prs-w{color:#e53935;}
+.no-history{color:#bbb;font-size:14px;text-align:center;padding:1.5rem 0;}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.filter-btn{padding:7px 16px;border:1.5px solid #ddd;border-radius:20px;font-size:13px;color:#555;background:white;cursor:pointer;transition:all 0.15s;font-family:inherit;}
+.filter-btn:hover{border-color:#00b4ff;color:#00b4ff;}
+.filter-btn.active{background:#00b4ff;color:white;border-color:#00b4ff;}
+.q-count{font-size:13px;color:#999;margin-bottom:1rem;}
+
+/* ── クイズ ── */
+.progress-wrap{margin-bottom:1rem;}
+.progress-bg{height:6px;background:#eee;border-radius:3px;margin-bottom:0.5rem;}
+.progress-fill{height:6px;background:#00b4ff;border-radius:3px;transition:width 0.4s ease;}
+.progress-meta{font-size:13px;color:#999;display:flex;justify-content:space-between;}
+.cat-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:0.7rem;background:#e6f7ff;color:#0090cc;}
+.cat-badge.abema{background:#fff0e6;color:#cc5500;}
+.q-num{font-size:12px;color:#bbb;margin-bottom:6px;}
+.q-text{font-size:17px;font-weight:500;color:#111;line-height:1.7;}
+.q-term{color:#00b4ff;font-weight:700;}
+.choices{display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;}
+.choice-btn{text-align:left;background:white;border:1.5px solid #e0e0e0;border-radius:10px;padding:0.9rem 1rem;font-size:15px;color:#222;cursor:pointer;line-height:1.6;transition:background 0.12s,border-color 0.12s;display:flex;gap:12px;align-items:flex-start;font-family:inherit;width:100%;}
+.choice-btn:hover:not(:disabled){background:#f0f8ff;border-color:#00b4ff;}
+.choice-btn.correct{background:#eaf6e0;border-color:#4caf50;color:#2e7d32;}
+.choice-btn.wrong{background:#fdecea;border-color:#e53935;color:#b71c1c;}
+.choice-btn.reveal{opacity:0.4;}
+.choice-label{font-weight:700;min-width:20px;color:#bbb;font-size:14px;flex-shrink:0;}
+.choice-btn.correct .choice-label{color:#4caf50;}
+.choice-btn.wrong .choice-label{color:#e53935;}
+.feedback{border-radius:10px;padding:0.9rem 1rem;font-size:15px;line-height:1.65;margin-bottom:1rem;display:none;}
+.feedback.show-correct{background:#eaf6e0;color:#2e7d32;border:1.5px solid #4caf50;display:block;}
+.feedback.show-wrong{background:#fdecea;color:#b71c1c;border:1.5px solid #e53935;display:block;}
+.fb-title{font-weight:700;margin-bottom:4px;font-size:16px;}
+.next-btn{width:100%;padding:0.9rem;background:#111;color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;display:none;}
+.next-btn:hover{opacity:0.8;}
+
+/* ── 結果 ── */
+.result-card{background:white;border-radius:14px;padding:1.75rem;text-align:center;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.result-icon{font-size:44px;margin-bottom:0.75rem;}
+.result-score-big{font-size:60px;font-weight:700;color:#00b4ff;line-height:1;}
+.result-denom{font-size:18px;color:#aaa;margin-bottom:0.25rem;}
+.result-msg{font-size:15px;color:#444;line-height:1.7;margin:1rem 0;}
+.stat-row{display:flex;gap:10px;margin:1rem 0 1.25rem;}
+.stat-box{flex:1;background:#f7f7f5;border-radius:10px;padding:0.85rem;}
+.stat-num{font-size:24px;font-weight:700;}
+.stat-num.c{color:#4caf50;}.stat-num.w{color:#e53935;}
+.stat-lbl{font-size:12px;color:#999;margin-top:3px;}
+.restart-btn{padding:0.8rem 2rem;background:#00b4ff;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;}
+.restart-btn:hover{opacity:0.88;}
+.review-section{margin-top:1.25rem;text-align:left;}
+.review-title{font-size:15px;font-weight:700;color:#111;margin-bottom:0.75rem;}
+.review-item{background:#fffbf0;border:1.5px solid #f5c518;border-radius:10px;padding:0.9rem 1rem;margin-bottom:0.65rem;}
+.review-term{font-size:15px;font-weight:700;color:#b8860b;margin-bottom:4px;}
+.review-cat-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#fdecea;color:#c0392b;margin-bottom:6px;}
+.review-def-label{font-size:11px;color:#999;margin-bottom:2px;}
+.review-def{font-size:14px;color:#444;line-height:1.65;}
+.perfect-banner{text-align:center;padding:0.9rem;background:#eaf6e0;border-radius:10px;color:#2e7d32;font-size:14px;font-weight:600;margin-top:1.25rem;}
+
+/* ── ① 全履歴メニュー ── */
+.hist-session{background:white;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.85rem;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.hist-session-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.hist-session-left{display:flex;align-items:center;gap:10px;}
+.hist-session-icon{font-size:22px;}
+.hist-session-meta{font-size:12px;color:#999;margin-top:2px;}
+.hist-score-pill{font-size:13px;font-weight:700;padding:3px 12px;border-radius:20px;background:#e8f5ff;color:#0070cc;}
+.hist-session-body{margin-top:1rem;padding-top:1rem;border-top:1px solid #f0f0f0;display:none;}
+.hist-session-body.open{display:block;}
+.hist-mini-stats{display:flex;gap:8px;margin-bottom:0.85rem;}
+.hist-mini-box{flex:1;background:#f7f7f5;border-radius:8px;padding:0.5rem;text-align:center;font-size:12px;}
+.hist-mini-box .n{font-size:18px;font-weight:700;}
+.hist-mini-box .l{color:#999;margin-top:1px;}
+.hist-wrong-list-title{font-size:12px;font-weight:700;color:#888;margin-bottom:0.5rem;}
+.hist-wrong-item{border-left:3px solid #f5c518;padding:0.5rem 0.75rem;margin-bottom:0.5rem;background:#fffdf0;border-radius:0 6px 6px 0;}
+.hist-wrong-term{font-size:13px;font-weight:700;color:#b8860b;}
+.hist-wrong-def{font-size:12px;color:#666;line-height:1.5;margin-top:2px;}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:#ccc;font-size:14px;}
+
+/* ── ② 用語一覧メニュー ── */
+.glossary-search{width:100%;padding:0.75rem 1rem;font-size:14px;border:1.5px solid #ddd;border-radius:10px;font-family:inherit;outline:none;margin-bottom:0.75rem;transition:border-color 0.15s;}
+.glossary-search:focus{border-color:#00b4ff;}
+.gloss-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.gloss-filter-btn{padding:5px 12px;border:1.5px solid #ddd;border-radius:20px;font-size:12px;color:#555;background:white;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.gloss-filter-btn:hover{border-color:#00b4ff;color:#00b4ff;}
+.gloss-filter-btn.active{background:#00b4ff;color:white;border-color:#00b4ff;}
+.gloss-filter-btn.tag-weak.active{background:#e53935;border-color:#e53935;}
+.gloss-count{font-size:12px;color:#999;margin-bottom:0.75rem;}
+.gloss-item{background:white;border-radius:12px;padding:1rem 1.1rem;margin-bottom:0.65rem;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.04);display:flex;gap:10px;align-items:flex-start;}
+.gloss-item.is-weak{border-left:4px solid #e53935;}
+.gloss-item-body{flex:1;min-width:0;}
+.gloss-term-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+.gloss-term{font-size:15px;font-weight:700;color:#111;}
+.gloss-cat{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#e6f7ff;color:#0090cc;}
+.gloss-cat.abema{background:#fff0e6;color:#cc5500;}
+.gloss-weak-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#fdecea;color:#c0392b;}
+.gloss-def{font-size:13px;color:#555;line-height:1.6;}
+.weak-btn{flex-shrink:0;background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:0.4rem 0.5rem;cursor:pointer;font-size:16px;transition:all 0.15s;line-height:1;}
+.weak-btn:hover{border-color:#e53935;background:#fff0f0;}
+.weak-btn.active{border-color:#e53935;background:#fdecea;}
+.gloss-empty{text-align:center;padding:2rem;color:#ccc;font-size:14px;}
+/* ── クイズタブ切替 ── */
+.quiz-tabs{display:flex;gap:0;margin-bottom:1rem;border:1.5px solid #e0e0e0;border-radius:10px;overflow:hidden;}
+.quiz-tab-btn{flex:1;padding:0.75rem;background:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#888;transition:all 0.15s;border-right:1px solid #e0e0e0;}
+.quiz-tab-btn:last-child{border-right:none;}
+.quiz-tab-btn.active{background:#00b4ff;color:white;}
+.quiz-tab-content{display:none;}
+.quiz-tab-content.active{display:block;}
+/* ── 管理者画面 ── */
+.adm-summary-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.adm-summary-box{flex:1;min-width:80px;background:white;border-radius:12px;padding:0.9rem;text-align:center;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.adm-summary-num{font-size:26px;font-weight:700;color:#00b4ff;}
+.adm-summary-lbl{font-size:11px;color:#999;margin-top:3px;}
+.adm-tab-row{display:flex;gap:6px;margin-bottom:0.85rem;}
+.adm-tab{flex:1;padding:0.65rem;background:white;border:1.5px solid #ddd;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:#666;transition:all 0.15s;}
+.adm-tab.active{background:#00b4ff;color:white;border-color:#00b4ff;}
+.adm-session-card{background:white;border-radius:12px;padding:1rem 1.1rem;margin-bottom:0.65rem;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.adm-session-header{display:flex;align-items:center;justify-content:space-between;}
+.adm-session-user{font-size:14px;font-weight:700;}
+.adm-session-meta{font-size:11px;color:#aaa;margin-top:2px;}
+.adm-score-pill{font-size:13px;font-weight:700;padding:3px 12px;border-radius:20px;}
+.adm-score-pill.good{background:#eaf6e0;color:#2e7d32;}
+.adm-score-pill.mid{background:#fff8e0;color:#b8860b;}
+.adm-score-pill.bad{background:#fdecea;color:#b71c1c;}
+.adm-wrong-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:0.6rem;}
+.adm-wrong-tag{font-size:11px;background:#fdecea;color:#c0392b;padding:2px 8px;border-radius:10px;}
+.adm-user-card{background:white;border-radius:12px;padding:1rem 1.1rem;margin-bottom:0.65rem;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.04);cursor:pointer;transition:box-shadow 0.15s;}
+.adm-user-card:hover{box-shadow:0 3px 12px rgba(0,0,0,0.1);}
+.adm-user-name{font-size:15px;font-weight:700;}
+.adm-user-stats{display:flex;gap:10px;margin-top:0.6rem;}
+.adm-user-stat{font-size:12px;color:#666;}
+.adm-user-stat strong{color:#111;}
+.adm-trend{display:flex;gap:4px;margin-top:0.5rem;align-items:center;}
+.adm-trend-bar{height:28px;min-width:8px;border-radius:4px;background:#00b4ff;opacity:0.7;position:relative;cursor:default;}
+.adm-trend-bar:hover{opacity:1;}
+.adm-refresh-btn{font-size:12px;color:#00b4ff;background:none;border:1px solid #00b4ff;border-radius:20px;padding:4px 12px;cursor:pointer;font-family:inherit;margin-bottom:0.85rem;}
+.adm-detail-weak-item{background:#fffbf0;border-left:3px solid #f5c518;border-radius:0 8px 8px 0;padding:0.6rem 0.75rem;margin-bottom:0.5rem;}
+.adm-detail-badge{display:inline-block;background:#e53935;color:white;font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;margin-right:6px;}
+/* ── メモ機能 ── */
+.memo-area{margin-top:0.6rem;}
+.memo-toggle-btn{font-size:12px;color:#aaa;background:none;border:none;cursor:pointer;padding:0;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:color 0.15s;}
+.memo-toggle-btn:hover{color:#00b4ff;}
+.memo-toggle-btn.has-memo{color:#00b4ff;font-weight:600;}
+.memo-input-wrap{margin-top:0.5rem;display:none;}
+.memo-input-wrap.open{display:block;}
+.memo-textarea{width:100%;padding:0.6rem 0.75rem;font-size:13px;font-family:inherit;border:1.5px solid #ddd;border-radius:8px;resize:vertical;min-height:64px;outline:none;line-height:1.6;transition:border-color 0.15s;color:#333;}
+.memo-textarea:focus{border-color:#00b4ff;}
+.memo-footer{display:flex;align-items:center;margin-top:0.4rem;}
+.memo-save-btn{padding:0.4rem 1rem;background:#00b4ff;color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;}
+.memo-save-btn:hover{opacity:0.85;}
+.memo-delete-btn{padding:0.4rem 0.75rem;background:none;color:#ccc;border:1px solid #e0e0e0;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit;margin-left:6px;transition:all 0.15s;}
+.memo-delete-btn:hover{color:#e53935;border-color:#e53935;}
+.memo-saved-msg{font-size:11px;color:#4caf50;margin-left:8px;opacity:0;transition:opacity 0.4s;}
+.memo-saved-msg.show{opacity:1;}
+.memo-preview{font-size:12px;color:#555;background:#f0f8ff;border-radius:7px;padding:0.5rem 0.7rem;margin-top:0.5rem;line-height:1.65;white-space:pre-wrap;border-left:3px solid #00b4ff;}
+/* ── 参考画像 ── */
+.ref-img-wrap{margin-top:0.75rem;}
+.ref-img-label{font-size:11px;color:#999;margin-bottom:4px;}
+.ref-img{width:100%;max-width:100%;border-radius:8px;border:0.5px solid #e0e0e0;display:block;}
+.ref-img-error{font-size:12px;color:#ccc;font-style:italic;}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー（常時表示） -->
+<div class="header">
+  <div class="header-logo">
+    <span class="logo-badge">ABEMA</span>
+    <span class="logo-title">なんでもクイズ</span>
+  </div>
+  <button class="hamburger" id="hamburger-btn" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- ドロワーメニュー -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">メニュー</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-menu">
+    <div class="drawer-item" id="menu-home" onclick="navTo('home');closeDrawer();">
+      <span class="drawer-item-icon">🏠</span>ホーム
+    </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-item" id="menu-history" onclick="navTo('history');closeDrawer();">
+      <span class="drawer-item-icon">📊</span>テスト履歴
+    </div>
+    <div class="drawer-item" id="menu-glossary" onclick="navTo('glossary');closeDrawer();">
+      <span class="drawer-item-icon">📖</span>用語一覧
+    </div>
+    <div class="drawer-item" id="menu-complist" onclick="navTo('complist');closeDrawer();">
+      <span class="drawer-item-icon">🏆</span>競合理解一覧
+    </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-item" id="menu-admin" onclick="navTo('admin');closeDrawer();">
+      <span class="drawer-item-icon">🔐</span>管理者画面
+    </div>
+  </div>
+  <div class="drawer-user" id="drawer-user-info" style="display:none">
+    <strong id="drawer-username"></strong>
+    <div>ログイン中</div>
+    <button class="drawer-logout" onclick="doLogout()">ログアウト</button>
+  </div>
+</div>
+
+<!-- メインコンテンツ -->
+<div id="main">
+
+  <!-- ログイン -->
+  <div class="screen" id="screen-login">
+    <div class="card" style="margin-top:0.5rem;">
+      <div class="login-title">ログイン</div>
+      <div class="login-desc">名前を入力してください。テスト結果・間違えた問題が端末に保存されます。</div>
+      <label class="input-label">お名前</label>
+      <input class="name-input" id="name-input" type="text" placeholder="例：山田 太郎" maxlength="20" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="login-err" id="login-err">名前を入力してください</div>
+      <button class="login-btn" onclick="doLogin()">はじめる →</button>
+    </div>
+  </div>
+
+  <!-- ホーム -->
+  <div class="screen" id="screen-home">
+    <div class="card" style="margin-top:0.5rem;">
+      <div class="user-greeting">こんにちは、<span id="home-username"></span>さん 👋</div>
+      <div class="section-title">📊 前回のテスト結果</div>
+      <div id="home-prev-result"></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-bottom:0.85rem;">🎯 クイズを始める</div>
+      <!-- タブ切替 -->
+      <div class="quiz-tabs">
+        <button class="quiz-tab-btn active" id="tab-btn-vocab" onclick="switchQuizTab('vocab',this)">📚 用語理解</button>
+        <button class="quiz-tab-btn" id="tab-btn-competitor" onclick="switchQuizTab('competitor',this)">🏆 競合理解</button>
+      </div>
+      <!-- 用語理解タブ -->
+      <div class="quiz-tab-content active" id="tab-vocab">
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
+          <button class="filter-btn" onclick="setFilter('広告基礎',this)">広告基礎</button>
+          <button class="filter-btn" onclick="setFilter('ABEMA用語',this)">ABEMA用語</button>
+        </div>
+        <div class="q-count" id="q-count-preview">全 99 問からランダムに 15 問出題されます</div>
+        <button class="primary-btn" onclick="startQuiz('vocab')">クイズを始める →</button>
+      </div>
+      <!-- 競合理解タブ -->
+      <div class="quiz-tab-content" id="tab-competitor">
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="setCompFilter('all',this)">すべて</button>
+          <button class="filter-btn" onclick="setCompFilter('DSP/SSP',this)">DSP/SSP</button>
+          <button class="filter-btn" onclick="setCompFilter('TVer',this)">TVer</button>
+          <button class="filter-btn" onclick="setCompFilter('アマプラ',this)">アマプラ</button>
+          <button class="filter-btn" onclick="setCompFilter('ネトフリ',this)">ネトフリ</button>
+          <button class="filter-btn" onclick="setCompFilter('媒体横断',this)">媒体横断</button>
+        </div>
+        <div class="q-count" id="comp-count-preview">全 60 問からランダムに 15 問出題されます</div>
+        <button class="primary-btn" onclick="startQuiz('competitor')">クイズを始める →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- クイズ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap" style="margin-top:0.5rem;">
+      <div class="progress-bg"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-meta"><span id="prog-label">問題 1 / 15</span><span id="score-live">正解 0 問</span></div>
+    </div>
+    <div class="card">
+      <div class="q-num" id="q-num"></div>
+      <div class="cat-badge" id="q-cat"></div>
+      <div class="q-text" id="q-text"></div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"><div class="fb-title" id="fb-title"></div><div id="fb-body"></div></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+
+  <!-- 結果 -->
+  <div class="screen" id="screen-result">
+    <div class="result-card" style="margin-top:0.5rem;">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-score-big" id="final-score"></div>
+      <div class="result-denom">/ <span id="final-total"></span> 問正解</div>
+      <div class="result-msg" id="final-msg"></div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num c" id="stat-correct"></div><div class="stat-lbl">正解</div></div>
+        <div class="stat-box"><div class="stat-num w" id="stat-wrong"></div><div class="stat-lbl">不正解</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-pct"></div><div class="stat-lbl">正答率</div></div>
+      </div>
+      <button class="restart-btn" onclick="navTo('home')">ホームに戻る</button>
+      <div id="review-area"></div>
+    </div>
+  </div>
+
+  <!-- ① テスト履歴 -->
+  <div class="screen" id="screen-history">
+    <div style="margin-top:0.5rem;">
+      <div class="section-title" style="margin-bottom:1rem;">📊 テスト履歴</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <!-- ② 用語一覧 -->
+  <div class="screen" id="screen-glossary">
+    <div style="margin-top:0.5rem;">
+      <div class="section-title" style="margin-bottom:0.75rem;">📖 用語一覧</div>
+      <input class="glossary-search" id="gloss-search" type="text" placeholder="用語を検索..." oninput="renderGlossary()">
+      <div class="gloss-filter-row">
+        <button class="gloss-filter-btn active" data-gf="all" onclick="setGlossFilter('all',this)">すべて</button>
+        <button class="gloss-filter-btn" data-gf="広告基礎" onclick="setGlossFilter('広告基礎',this)">広告基礎</button>
+        <button class="gloss-filter-btn" data-gf="ABEMA用語" onclick="setGlossFilter('ABEMA用語',this)">ABEMA用語</button>
+        <button class="gloss-filter-btn tag-weak" data-gf="weak" onclick="setGlossFilter('weak',this)">🔖 苦手のみ</button>
+      </div>
+      <div class="gloss-count" id="gloss-count"></div>
+      <div id="glossary-list"></div>
+    </div>
+  </div>
+
+  <!-- ③ 競合理解一覧 -->
+  <div class="screen" id="screen-complist">
+    <div style="margin-top:0.5rem;">
+      <div class="section-title" style="margin-bottom:0.75rem;">🏆 競合理解一覧</div>
+      <input class="glossary-search" id="comp-search" type="text" placeholder="問題・回答を検索..." oninput="renderCompList()">
+      <div class="gloss-filter-row">
+        <button class="gloss-filter-btn active" data-cf="all" onclick="setCompListFilter('all',this)">すべて</button>
+        <button class="gloss-filter-btn" data-cf="DSP/SSP" onclick="setCompListFilter('DSP/SSP',this)">DSP/SSP</button>
+        <button class="gloss-filter-btn" data-cf="TVer" onclick="setCompListFilter('TVer',this)">TVer</button>
+        <button class="gloss-filter-btn" data-cf="アマプラ" onclick="setCompListFilter('アマプラ',this)">アマプラ</button>
+        <button class="gloss-filter-btn" data-cf="ネトフリ" onclick="setCompListFilter('ネトフリ',this)">ネトフリ</button>
+        <button class="gloss-filter-btn" data-cf="媒体横断" onclick="setCompListFilter('媒体横断',this)">媒体横断</button>
+        <button class="gloss-filter-btn tag-weak" data-cf="weak" onclick="setCompListFilter('weak',this)">🔖 苦手のみ</button>
+      </div>
+      <div class="gloss-count" id="comp-list-count"></div>
+      <div id="comp-list"></div>
+    </div>
+  </div>
+
+  <!-- 管理者画面 -->
+  <div class="screen" id="screen-admin">
+    <div style="margin-top:0.5rem;">
+      <!-- 管理者ログイン -->
+      <div id="admin-login-area">
+        <div class="card">
+          <div style="font-size:18px;font-weight:700;margin-bottom:0.4rem;">🔐 管理者ログイン</div>
+          <div style="font-size:14px;color:#666;margin-bottom:1.25rem;">管理者専用パスワードを入力してください。</div>
+          <label class="input-label">パスワード</label>
+          <input class="name-input" id="admin-pw-input" type="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')adminLogin()">
+          <div class="login-err" id="admin-login-err">パスワードが違います</div>
+          <button class="login-btn" onclick="adminLogin()" style="margin-top:0.75rem;">ログイン →</button>
+        </div>
+      </div>
+      <!-- 管理者ダッシュボード -->
+      <div id="admin-dashboard" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-size:16px;font-weight:700;">📊 管理者ダッシュボード</div>
+          <button onclick="adminLogout()" style="font-size:12px;color:#999;background:none;border:1px solid #ddd;border-radius:20px;padding:4px 12px;cursor:pointer;font-family:inherit;">ログアウト</button>
+        </div>
+        <!-- サマリカード -->
+        <div class="adm-summary-row" id="adm-summary"></div>
+        <!-- タブ切替 -->
+        <div class="adm-tab-row">
+          <button class="adm-tab active" onclick="switchAdminTab('recent',this)">🕐 直近の受験</button>
+          <button class="adm-tab" onclick="switchAdminTab('users',this)">👥 ユーザー別</button>
+        </div>
+        <!-- 直近受験タブ -->
+        <div id="adm-tab-recent">
+          <div id="adm-recent-list"></div>
+        </div>
+        <!-- ユーザー別タブ -->
+        <div id="adm-tab-users" style="display:none;">
+          <div id="adm-users-list"></div>
+        </div>
+        <!-- ユーザー詳細モーダル -->
+        <div id="adm-detail-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;overflow-y:auto;padding:1rem;" onclick="if(event.target===this)closeAdminDetail()">
+          <div style="background:white;border-radius:14px;max-width:640px;margin:0 auto;padding:1.5rem;" onclick="event.stopPropagation()">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+              <div style="font-size:16px;font-weight:700;" id="adm-detail-title"></div>
+              <button onclick="closeAdminDetail()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888;">✕</button>
+            </div>
+            <div id="adm-detail-body"></div>
+          </div>
+        </div>
+      </div>
+      <!-- ローディング -->
+      <div id="admin-loading" style="display:none;text-align:center;padding:2rem;color:#aaa;font-size:14px;">読み込み中...</div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ══════════════════════════════════════════
+//  GAS バックエンドURL（デプロイ後に書き換え）
+// ══════════════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzaeg7JXFNI8CTA1ZAfVjTlaKt5ervxTlFwFVxyilRKL9H77oClWrUGU0OJgjNrkWaU/exec'; // ← GASデプロイ後のURLを貼り付ける
+
+// GASにデータを送信する共通関数
+async function gasPost(payload) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    return await res.json();
+  } catch(e) {
+    console.error('GAS通信エラー:', e);
+    return { ok: false, error: e.toString() };
+  }
+}
+
+// ══════════════════════════════════════════
+//  管理者機能
+// ══════════════════════════════════════════
+let adminAuthed = false;
+let adminPassword = '';
+let adminData = null;
+
+async function adminLogin() {
+  const pw = document.getElementById('admin-pw-input').value;
+  const err = document.getElementById('admin-login-err');
+  if (!pw) { err.style.display = 'block'; err.textContent = 'パスワードを入力してください'; return; }
+  err.style.display = 'none';
+  document.getElementById('admin-loading').style.display = 'block';
+  document.getElementById('admin-login-area').style.display = 'none';
+  const result = await gasPost({ action: 'getResults', password: pw });
+  document.getElementById('admin-loading').style.display = 'none';
+  if (!result.ok) {
+    document.getElementById('admin-login-area').style.display = 'block';
+    err.style.display = 'block';
+    err.textContent = result.error || 'パスワードが違います';
+    return;
+  }
+  adminAuthed = true;
+  adminPassword = pw;
+  adminData = result;
+  document.getElementById('admin-dashboard').style.display = 'block';
+  renderAdminDashboard(result);
+}
+
+function adminLogout() {
+  adminAuthed = false;
+  adminPassword = '';
+  adminData = null;
+  document.getElementById('admin-dashboard').style.display = 'none';
+  document.getElementById('admin-login-area').style.display = 'block';
+  document.getElementById('admin-pw-input').value = '';
+}
+
+async function adminRefresh() {
+  if (!adminAuthed) return;
+  document.getElementById('admin-loading').style.display = 'block';
+  const result = await gasPost({ action: 'getResults', password: adminPassword });
+  document.getElementById('admin-loading').style.display = 'none';
+  if (!result.ok) return;
+  adminData = result;
+  renderAdminDashboard(result);
+}
+
+function renderAdminDashboard(data) {
+  const users = data.users || [];
+  const recent = data.recent || [];
+  const totalTests = users.reduce((s, u) => s + u.totalTests, 0);
+  const avgPct = users.length ? Math.round(users.reduce((s, u) => s + u.avgPct, 0) / users.length) : 0;
+  const icon = avgPct >= 80 ? '🏆' : avgPct >= 60 ? '👍' : '📚';
+
+  // サマリ
+  document.getElementById('adm-summary').innerHTML = `
+    <div class="adm-summary-box"><div class="adm-summary-num">${users.length}</div><div class="adm-summary-lbl">受験者数</div></div>
+    <div class="adm-summary-box"><div class="adm-summary-num">${totalTests}</div><div class="adm-summary-lbl">延べ受験回数</div></div>
+    <div class="adm-summary-box"><div class="adm-summary-num">${icon} ${avgPct}%</div><div class="adm-summary-lbl">平均正答率</div></div>
+  `;
+
+  // 直近受験リスト
+  const recentHtml = recent.length === 0
+    ? '<div style="text-align:center;padding:2rem;color:#ccc;font-size:14px;">まだ受験データがありません</div>'
+    : recent.map(s => {
+        const pct = Number(s.pct);
+        const pillCls = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
+        const wrongs = s.wrongTerms ? s.wrongTerms.split(', ').filter(Boolean) : [];
+        return `<div class="adm-session-card">
+          <div class="adm-session-header">
+            <div>
+              <div class="adm-session-user">👤 ${s.userName}</div>
+              <div class="adm-session-meta">${s.dateStr}　カテゴリ：${s.cat}</div>
+            </div>
+            <div class="adm-score-pill ${pillCls}">${s.score}/${s.total}問 ${pct}%</div>
+          </div>
+          ${wrongs.length > 0 ? `<div class="adm-wrong-tags">${wrongs.map(w=>`<span class="adm-wrong-tag">${w}</span>`).join('')}</div>` : '<div style="font-size:12px;color:#4caf50;margin-top:0.5rem;">✅ 全問正解</div>'}
+        </div>`;
+      }).join('');
+
+  document.getElementById('adm-recent-list').innerHTML =
+    `<button class="adm-refresh-btn" onclick="adminRefresh()">🔄 最新データに更新</button>` + recentHtml;
+
+  // ユーザー別
+  const usersHtml = users.length === 0
+    ? '<div style="text-align:center;padding:2rem;color:#ccc;font-size:14px;">まだ受験データがありません</div>'
+    : users.map(u => {
+        const pillCls = u.avgPct >= 80 ? 'good' : u.avgPct >= 60 ? 'mid' : 'bad';
+        const bars = u.sessions.slice().reverse().slice(-10).map(s => {
+          const h = Math.max(8, Math.round(Number(s.pct) * 0.28));
+          const c = Number(s.pct) >= 80 ? '#4caf50' : Number(s.pct) >= 60 ? '#f5c518' : '#e53935';
+          return `<div class="adm-trend-bar" style="height:${h}px;background:${c};" title="${s.dateStr} ${s.pct}%"></div>`;
+        }).join('');
+        return `<div class="adm-user-card" onclick="openAdminDetail('${u.userName.replace(/'/g,"\\'")}')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="adm-user-name">👤 ${u.userName}</div>
+            <div class="adm-score-pill ${pillCls}">平均 ${u.avgPct}%</div>
+          </div>
+          <div class="adm-user-stats">
+            <span class="adm-user-stat">受験回数：<strong>${u.totalTests}回</strong></span>
+            <span class="adm-user-stat">最終受験：<strong>${u.sessions[0].dateStr}</strong></span>
+          </div>
+          ${bars ? `<div class="adm-trend" title="受験履歴（左が古い）">${bars}</div>` : ''}
+        </div>`;
+      }).join('');
+
+  document.getElementById('adm-users-list').innerHTML =
+    `<button class="adm-refresh-btn" onclick="adminRefresh()">🔄 最新データに更新</button>` + usersHtml;
+}
+
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.adm-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('adm-tab-recent').style.display = tab === 'recent' ? 'block' : 'none';
+  document.getElementById('adm-tab-users').style.display = tab === 'users' ? 'block' : 'none';
+}
+
+async function openAdminDetail(userName) {
+  document.getElementById('adm-detail-overlay').style.display = 'block';
+  document.getElementById('adm-detail-title').textContent = `👤 ${userName} の詳細`;
+  document.getElementById('adm-detail-body').innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa;">読み込み中...</div>';
+  const result = await gasPost({ action: 'getUserDetail', password: adminPassword, userName });
+  if (!result.ok) { document.getElementById('adm-detail-body').innerHTML = '<div style="color:#e53935;">データの取得に失敗しました</div>'; return; }
+  const { details, weakRanking } = result;
+  // ユーザーの受験履歴をadminDataから取得
+  const user = (adminData.users || []).find(u => u.userName === userName);
+  const sessionsHtml = user ? user.sessions.map(s => {
+    const pct = Number(s.pct);
+    const pillCls = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
+    const wrongs = s.wrongTerms ? s.wrongTerms.split(', ').filter(Boolean) : [];
+    return `<div class="adm-session-card" style="margin-bottom:0.5rem;">
+      <div class="adm-session-header">
+        <div><div class="adm-session-meta">${s.dateStr}　${s.cat}</div></div>
+        <div class="adm-score-pill ${pillCls}">${s.score}/${s.total}問 ${pct}%</div>
+      </div>
+      ${wrongs.length > 0 ? `<div class="adm-wrong-tags">${wrongs.map(w=>`<span class="adm-wrong-tag">${w}</span>`).join('')}</div>` : '<div style="font-size:12px;color:#4caf50;margin-top:0.4rem;">✅ 全問正解</div>'}
+    </div>`;
+  }).join('') : '';
+
+  const weakHtml = weakRanking.length > 0
+    ? weakRanking.map(w => `<div class="adm-detail-weak-item"><span class="adm-detail-badge">${w.count}回</span><strong>${w.term}</strong></div>`).join('')
+    : '<div style="color:#4caf50;font-size:13px;">苦手用語はありません！</div>';
+
+  document.getElementById('adm-detail-body').innerHTML = `
+    <div style="font-size:14px;font-weight:700;margin-bottom:0.65rem;">📋 受験履歴</div>
+    ${sessionsHtml || '<div style="color:#ccc;font-size:13px;">データなし</div>'}
+    <div style="font-size:14px;font-weight:700;margin:1rem 0 0.65rem;">🔴 苦手用語ランキング（間違い回数が多い順）</div>
+    ${weakHtml}
+  `;
+}
+
+function closeAdminDetail() {
+  document.getElementById('adm-detail-overlay').style.display = 'none';
+}
+
+// ══════════════════════════════════════════
+//  用語データ
+// ══════════════════════════════════════════
+const ALL_TERMS=[
+{term:"M1層",def:"20歳〜34歳の男性を指す、テレビ・広告業界のマーケティング区分",cat:"広告基礎"},
+{term:"F1層",def:"20歳〜34歳の女性を指す、テレビ・広告業界のマーケティング区分",cat:"広告基礎"},
+{term:"M2 / F2層",def:"35歳〜49歳の男女を指すマーケティング区分",cat:"広告基礎"},
+{term:"M3 / F3層",def:"50歳以上の男女を指すマーケティング区分",cat:"広告基礎"},
+{term:"Teen層",def:"13歳〜19歳の男女を指す若年層向けのマーケティング区分",cat:"広告基礎"},
+{term:"タイムCM（番組協賛）",def:"特定の番組のスポンサー枠を買い取り、その番組内で放送されるCM",cat:"広告基礎"},
+{term:"スポットCM",def:"番組を指定せず、放送局が定める時間帯にランダムで挿入されるCM",cat:"広告基礎"},
+{term:"線引き",def:"スポットCMを選択した場合、広告主がテレビ局や広告代理店から受け取るタイムスケジュール表",cat:"広告基礎"},
+{term:"提供クレジット",def:"番組の前後などで「提供：〇〇」とスポンサーの企業名を表示すること",cat:"広告基礎"},
+{term:"一社提供",def:"特定の番組のスポンサー枠を、1つの企業が単独で独占すること",cat:"広告基礎"},
+{term:"考査",def:"企業実態やCM内容が法令や放送基準に違反していないかを事前に審査すること",cat:"広告基礎"},
+{term:"尺",def:"動画や音声の長さ（時間）のこと。CMでは15秒・30秒・60秒などが基本単位",cat:"広告基礎"},
+{term:"クール",def:"テレビ番組の放送期間の単位。通常は3ヶ月間を1クールと呼ぶ",cat:"広告基礎"},
+{term:"絵コンテ",def:"映像制作の前に、カット割りやセリフ・演出意図をイラストでまとめた設計図",cat:"広告基礎"},
+{term:"オフライン編集",def:"撮影素材から必要な箇所を選び、構成等を決定する「仮編集」",cat:"広告基礎"},
+{term:"ハイテレ / ローテレ",def:"テレビの視聴頻度が高い層（ハイテレ）と低い層（ローテレ）を分ける概念",cat:"広告基礎"},
+{term:"VOD",def:"Video On Demandの略。ユーザーが好きな時に好きな映像コンテンツを視聴できるサービス",cat:"広告基礎"},
+{term:"トーン＆マナー",def:"映像や広告が持つ雰囲気・色調・言葉遣いなど、全体の一貫したデザインルール",cat:"広告基礎"},
+{term:"バンドワゴン効果",def:"「多くの人が支持している」という事実を描写し、さらに多くの支持を集める心理効果",cat:"広告基礎"},
+{term:"異化効果",def:"日常的な風景の中にあえて非日常的な要素を混ぜ、強い違和感で視聴者の目を引く演出",cat:"広告基礎"},
+{term:"デモンストレーション",def:"商品の使い方や効果を映像内で実際にやって見せること（実演）",cat:"広告基礎"},
+{term:"フック",def:"冒頭の数秒で視聴者の関心を引きつけ、動画からの離脱を防ぐための仕掛けや演出",cat:"広告基礎"},
+{term:"CPA",def:"1件の成果や顧客を獲得するために、どの程度の広告費用がかかったかを表す指標（顧客獲得単価）",cat:"広告基礎"},
+{term:"imp（インプレッション）",def:"Web広告やSNS投稿がユーザーの画面に表示された回数を指す指標",cat:"広告基礎"},
+{term:"商流",def:"広告枠が最終顧客（広告主）に届くまでの契約・金銭・受注発注の流れ",cat:"広告基礎"},
+{term:"CV（コンバージョン）",def:"Webサイトやモバイルアプリなどで発生する最終的な成果",cat:"広告基礎"},
+{term:"CPM",def:"広告が1,000回表示されるごとに発生する費用（インプレッション単価）",cat:"広告基礎"},
+{term:"ROI",def:"投じた費用に対して、どれだけの利益を上げられたかを示す指標",cat:"広告基礎"},
+{term:"ROAS",def:"広告費に対する広告収益の割合。「収益÷広告費用」で算出できる",cat:"広告基礎"},
+{term:"リーチ",def:"広告に接触したユニークユーザー数（人数）のこと。何人に広告が届いたかを測る指標",cat:"広告基礎"},
+{term:"LTV",def:"1人の顧客が取引を開始してから終了するまでの期間に企業にもたらす利益の合計（顧客生涯価値）",cat:"広告基礎"},
+{term:"LP（ランディングページ）",def:"Web広告・検索結果・SNSなどを経由して訪問者が最初にアクセスするページ",cat:"広告基礎"},
+{term:"運用型広告",def:"広告主が予算やターゲット・クリエイティブを細かく設定し、リアルタイムで配信調整を行う手法",cat:"広告基礎"},
+{term:"純広告",def:"期間や表示回数が定められた広告枠を事前に購入して掲載する広告。期間中の調整がしにくい",cat:"広告基礎"},
+{term:"KPI",def:"最終目標を達成するための重要な中間指標",cat:"広告基礎"},
+{term:"KGI",def:"売上高や利益など、ビジネスの最終的な目標",cat:"広告基礎"},
+{term:"グロス",def:"媒体原価に手数料（マージン）を上乗せした総額",cat:"広告基礎"},
+{term:"ネット",def:"手数料を除いた、媒体社に支払う原価のこと",cat:"広告基礎"},
+{term:"マージン",def:"広告代理店が受け取る仲介手数料のこと",cat:"広告基礎"},
+{term:"デモグラ",def:"性別・年齢・居住地などの人口統計学的属性",cat:"広告基礎"},
+{term:"サイコグラフィック",def:"価値観・嗜好・性格などの心理学的属性",cat:"広告基礎"},
+{term:"アトリビューション",def:"最終成果（コンバージョン）に至るまでの複数の接触経路を分析し、それぞれの貢献度を評価する手法",cat:"広告基礎"},
+{term:"クリック率（CTR）",def:"インプレッション数のうち広告がクリックされた回数の割合。「クリック数÷インプレッション数」で算出",cat:"広告基礎"},
+{term:"フリークエンシー（FQ）",def:"ユーザー1人あたりの広告の平均接触回数・接触頻度",cat:"広告基礎"},
+{term:"フリークエンシーキャップ",def:"1人のユーザーに対して最大何回まで広告を表示させるかの上限を設定すること",cat:"広告基礎"},
+{term:"ビュースルーコンバージョン（VTC）",def:"広告表示時にはクリックしなかったが、その後検索などを通じて広告サイトへ訪問し実際のアクションに繋がること",cat:"広告基礎"},
+{term:"リターゲティング",def:"サイトやアプリに一度来訪したユーザー、またはCM・番組を一度視聴したユーザーにターゲティングして広告配信する方法",cat:"広告基礎"},
+{term:"オーディエンス拡張",def:"サイト訪問ユーザーと類似性の高いユーザーを探し出し広告を配信するターゲティング手法",cat:"広告基礎"},
+{term:"完全視聴",def:"動画やCMを最後まで視聴すること",cat:"広告基礎"},
+{term:"CPCV",def:"広告動画の完全視聴1回あたりのコスト",cat:"広告基礎"},
+{term:"インストリーム動画広告",def:"動画コンテンツの前後・合間に表示される動画広告",cat:"広告基礎"},
+{term:"インフィード型",def:"フィード形式のコンテンツとコンテンツの間に、同じフィード形式で表示される広告",cat:"広告基礎"},
+{term:"エンゲージメント",def:"主にSNS広告において、ユーザーのリポスト・いいね・フォローなどのアクションを数値化したもの",cat:"広告基礎"},
+{term:"ブランドセーフティ",def:"広告が適切なサイトやコンテンツに表示されているかを把握し、ブランド毀損リスクを回避すること",cat:"広告基礎"},
+{term:"ファーストパーティーデータ",def:"自社で蓄積したユーザーデータ。行動ログ・会員属性・メールアドレスなどを含む",cat:"広告基礎"},
+{term:"アッパーファネル",def:"顧客となりうるユーザーに、まず認知や興味関心を持ってもらうフェーズ",cat:"広告基礎"},
+{term:"ミドルファネル",def:"一定の認知・関心を持ち購入のために比較検討しているユーザーに、さらに購入意向を持ってもらうフェーズ",cat:"広告基礎"},
+{term:"ローワーファネル",def:"購入意向が高いユーザーに適切なコミュニケーションを取り、実際に購入してもらうフェーズ",cat:"広告基礎"},
+{term:"アップセル",def:"商品を検討中の顧客に対して、より高額な商品を勧める営業手法",cat:"広告基礎"},
+{term:"クロスセル",def:"検討中の顧客に対して、別の商品・サービスをあわせて購入するよう勧める営業手法",cat:"広告基礎"},
+{term:"オウンドメディア",def:"自社サイトやメルマガなど、企業自らが所有する媒体",cat:"広告基礎"},
+{term:"BtoB / BtoC",def:"法人向けビジネス（BtoB）と一般消費者向けビジネス（BtoC）の略称",cat:"広告基礎"},
+{term:"ハイブリッドイベント",def:"リアル会場での開催と、オンラインでのライブ配信を同時に行うイベント形式",cat:"広告基礎"},
+{term:"ABEMA",def:"サイバーエージェントとテレビ朝日が共同で展開する「新しい未来のテレビ」",cat:"ABEMA用語"},
+{term:"リニア配信",def:"24時間365日、編成された番組表に沿って配信されるテレビ型のリアルタイム配信形式",cat:"ABEMA用語"},
+{term:"ビデオ配信",def:"放送が終わった番組や限定コンテンツを、好きな時に視聴できるオンデマンド配信機能",cat:"ABEMA用語"},
+{term:"ABEMAプレミアム",def:"広告なし視聴・追っかけ再生・動画ダウンロードなどが利用できる月額制の有料会員サービス",cat:"ABEMA用語"},
+{term:"広告つきABEMAプレミアム",def:"プレミアム限定コンテンツを通常より低価格で広告つきで視聴できる新プラン",cat:"ABEMA用語"},
+{term:"ABEMA Ads",def:"若年層へ圧倒的なリーチを誇る、ABEMAプラットフォーム上で配信される広告商品の総称",cat:"ABEMA用語"},
+{term:"ABEMA Premium Ad (APA)",def:"視聴開始数が保証され、人気番組等へ優先的にCM配信される予約型プレミアム商品",cat:"ABEMA用語"},
+{term:"ABEMA Advanced Ad (AAA)",def:"インプレッション非保証だが、低額から詳細なターゲティングが可能な運用型CM配信",cat:"ABEMA用語"},
+{term:"オーディエンス指定",def:"視聴者の年齢・性別・エリアなどのデモグラフィック属性をもとにターゲティングする機能",cat:"ABEMA用語"},
+{term:"プログラム指定",def:"広告を流す番組やジャンルを指定し、興味関心などに合わせてターゲティングする機能",cat:"ABEMA用語"},
+{term:"ABEMA Home Sponsored",def:"ABEMAのホーム画面ファーストビューを1日1社独占して配信するインパクトの高い企画広告",cat:"ABEMA用語"},
+{term:"ABEMA Contents Sponsored",def:"人気番組への提供表示やオリジナルCM制作など、コンテンツの世界観と連動した企画広告",cat:"ABEMA用語"},
+{term:"WAU",def:"Weekly Active Usersの略。1週間の視聴者数を示すABEMAの視聴規模指標",cat:"ABEMA用語"},
+{term:"UU（ユニークユーザー）",def:"特定の期間内にアプリやサービスを訪問した重複を除いた個別のユーザー数",cat:"ABEMA用語"},
+{term:"ABEMA Live Screen Ad",def:"ライブ中継の視聴を遮らず、L字などのスプリットスクリーン型で配信される新しい広告フォーマット",cat:"ABEMA用語"},
+{term:"ABEMAサーベイ",def:"広告接触者に対してブランド認知・好意度・購入意向などを計測するABEMA独自の意識調査",cat:"ABEMA用語"},
+{term:"ABEMA de DAZN",def:"スポーツチャンネル「DAZN」の厳選コンテンツをABEMAプラットフォーム上で視聴できるサービス",cat:"ABEMA用語"},
+{term:"ABEMA de J SPORTS",def:"スポーツ専門チャンネル「J SPORTS」のコンテンツをABEMA内で視聴できるプラン",cat:"ABEMA用語"},
+{term:"TV Bridge",def:"国内テレビメーカーの視聴ログを連携し、テレビCMとABEMA広告のリーチを最適化するデータ基盤",cat:"ABEMA用語"},
+{term:"AdMarket",def:"ABEMA Adsの出稿シミュレーション・広告クリエイティブ制作・運用代行などを行うサービス",cat:"ABEMA用語"},
+{term:"ビジネスマネージャー",def:"ABEMA Adsの広告申し込み・素材入稿・レポート確認などを一括して行う管理画面",cat:"ABEMA用語"},
+{term:"VISIONS",def:"ABEMAのスポーツ広告事例やデータなど、映像メディアの未来と可能性を探る情報サイト",cat:"ABEMA用語"},
+{term:"のみどり配信",def:"特定の番組のCM枠のみにCMを配信する方法。主に今日好きの協賛メニューで提供している形式",cat:"ABEMA用語"},
+{term:"ノンスキッパブル広告",def:"視聴者がスキップできないインストリーム広告。ABEMA広告の基本的な仕様はこれに該当する",cat:"ABEMA用語"},
+{term:"1Q",def:"サイバーエージェントグループでは毎年9月〜12月を指す四半期",cat:"ABEMA用語"},
+{term:"2Q",def:"サイバーエージェントグループでは毎年1月〜3月を指す四半期",cat:"ABEMA用語"},
+{term:"3Q",def:"サイバーエージェントグループでは毎年4月〜6月を指す四半期",cat:"ABEMA用語"},
+{term:"4Q",def:"サイバーエージェントグループでは毎年7月〜9月を指す四半期",cat:"ABEMA用語"},
+{term:"当期",def:"現在進行中のQを指す言葉。「当期受注」などの使い方をする",cat:"ABEMA用語"},
+{term:"入り",def:"現在進行中のQの次のQを指す言葉。「入りの受注」などの使い方をする",cat:"ABEMA用語"},
+{term:"入り入り",def:"現在進行中のQの次の次のQを指す言葉。「入り入りの受注」などの使い方をする",cat:"ABEMA用語"},
+{term:"情報解禁",def:"AbemaTVから世の中に対して番組情報等の新情報を公開・告知すること",cat:"ABEMA用語"},
+{term:"リリース（ABEMA）",def:"ABEMAのプロダクトチームから営業に対して、商品PKGが共有されること",cat:"ABEMA用語"},
+{term:"視聴（ABEMA）",def:"番組・CMをみること。ABEMAでは0秒の視聴を1回とカウントする",cat:"ABEMA用語"},
+{term:"新しい未来のテレビ",def:"ABEMAが掲げる、テレビとビデオを融合させたイノベーションを目指すブランドビジョン",cat:"ABEMA用語"},
+];
+
+const DISTRACTORS={
+"M1層":["20歳〜34歳の女性を指すマーケティング区分","35歳〜49歳の男性を指すマーケティング区分","13歳〜19歳の男女を指す若年層マーケティング区分"],
+"F1層":["20歳〜34歳の男性を指すマーケティング区分","35歳〜49歳の女性を指すマーケティング区分","13歳〜19歳の男女を指す若年層マーケティング区分"],
+"M2 / F2層":["20歳〜34歳の男女を指すマーケティング区分","50歳以上の男女を指すマーケティング区分","13歳〜19歳の男女を指すマーケティング区分"],
+"M3 / F3層":["35歳〜49歳の男女を指すマーケティング区分","20歳〜34歳の男女を指すマーケティング区分","25歳〜54歳の男女を指す中心購買層のマーケティング区分"],
+"Teen層":["20歳〜24歳の男女を指す若年成人マーケティング区分","10歳〜15歳の男女を指す児童向けマーケティング区分","15歳〜24歳の男女を指す若年層マーケティング区分"],
+"タイムCM（番組協賛）":["番組を指定せず放送局が定める時間帯にランダムで挿入されるCM","特定の番組を1社が単独でスポンサードし番組内に独占表示するCM","視聴者がスキップできないインストリーム形式のCM"],
+"スポットCM":["特定の番組のスポンサー枠を買い取り、その番組内で放送されるCM","特定のジャンルの番組にのみ絞って配信されるターゲティングCM","フィード形式のコンテンツの合間に挿入される広告"],
+"線引き":["スポットCMを放送した後に広告主が受け取る視聴率レポート","CM素材の長さ（尺）や放送枠を記載した制作仕様書","CMの放送期間・本数・金額を一覧化した媒体社からの見積書"],
+"提供クレジット":["番組制作費の一部をスポンサーが負担する契約形式","番組スポンサーが番組内でコーナーや企画を独自に提供すること","CMの前後に挿入されるスポンサー企業のロゴアニメーション"],
+"一社提供":["複数企業が費用を分担して同一番組にスポンサーとして参加すること","特定の番組の広告枠を2〜3社で均等に買い取る形式","放送局が自社番組に広告枠を設けず全額負担で制作すること"],
+"考査":["CM素材の映像・音質・尺が放送技術基準を満たすか確認すること","広告の効果測定を行い次回キャンペーンの改善点を審査すること","広告代理店が媒体社に提出するCM出稿申込書類の審査"],
+"尺":["CMが放送される時間帯・曜日・番組枠の指定単位","映像制作における1カットの画角や構図の設計","CMに登場するタレントの出演契約期間"],
+"クール":["CMを複数回まとめて契約する際の放送単位（通常6週間）","テレビ局が定める広告出稿の最小単位期間（通常1ヶ月）","番組の視聴率を集計する調査期間（通常4週間）"],
+"絵コンテ":["映像完成後に内容を文字でまとめた制作レポート","撮影現場でカメラアングルを指示するための技術仕様書","映像編集ソフト上でカットを配置した初期タイムライン"],
+"オフライン編集":["映像の色調・明度・彩度を調整する最終仕上げ作業","BGMやナレーションなどの音声を映像に同期させる作業","完成した映像データを放送規格に変換してエンコードする工程"],
+"ハイテレ / ローテレ":["スマートフォンでの動画視聴頻度が高い層と低い層を分ける概念","ケーブルテレビや衛星放送を契約しているかどうかで分類する概念","テレビ広告の視聴完了率が高い番組と低い番組を区別する概念"],
+"VOD":["編成された番組表に沿い24時間リアルタイムで配信される放送形式","放送局が制作した番組を一定期間後に再放送するサービス","有料会員のみが広告なしで視聴できるプレミアム配信サービス"],
+"トーン＆マナー":["CMや広告のターゲット層・配信時間帯・媒体を定めた出稿方針","広告キャンペーンの予算配分や期間を決める計画書のこと","特定ブランドの広告出稿量や露出頻度の上限を定めたルール"],
+"バンドワゴン効果":["商品の欠点をあえて提示することで信頼感を生む広告手法","希少性や限定感を強調することで購買意欲を高める心理効果","権威ある専門家や有名人が推薦することで信頼感を高める効果"],
+"異化効果":["視聴者に親しみやすい日常的な場面を繰り返し見せ記憶に残す演出","同じメッセージを複数のメディアで繰り返し露出する広告戦略","視聴者の既存イメージを強化するため一貫した演出を続けること"],
+"デモンストレーション":["著名人や専門家が商品を推薦・保証するコメントを提示する手法","商品の特長を競合と比較しながら優位性を訴求する広告手法","視聴者が感情移入できるストーリーを通じて商品価値を伝える演出"],
+"フック":["広告の最後に強いCTAを入れ視聴者のアクションを促す仕掛け","一度見た視聴者に繰り返し同じ広告を配信して記憶定着を促す手法","視聴者のコメントや反応を広告内に取り込みエンゲージメントを高める演出"],
+"BtoB / BtoC":["企業が自社メディアと外部媒体を組み合わせて広告配信する手法","オンライン広告とオフライン広告を組み合わせたキャンペーン手法","ブランド認知（Brand）と購買転換（Conversion）を区別したマーケ指標"],
+"ハイブリッドイベント":["複数の会場を同時中継で結び、リアル会場間をつなぐイベント形式","オンラインのみで開催されるバーチャルイベントの形式","録画した講演映像をアーカイブとして後日配信するイベント形式"],
+"CPA":["広告が1,000回表示されるごとに発生するコスト（インプレッション単価）","広告動画を最後まで視聴された1回あたりのコスト","広告費を売上高で割って算出する広告効率の指標"],
+"imp（インプレッション）":["広告がクリックされた合計回数を示す指標","広告を通じて実際に購買などの成果が発生した回数","同一ユーザーが広告を視聴した平均回数"],
+"商流":["広告素材がクリエイターから媒体社に納品されるまでの制作工程","広告効果の測定データが広告主に報告されるまでのレポートフロー","広告キャンペーンの企画から実施・効果測定までの業務プロセス"],
+"CV（コンバージョン）":["広告がユーザーの画面に表示された合計回数","広告をクリックしてサイトを訪問したユーザーの合計数","ユーザー1人あたりの広告の平均接触回数"],
+"CPM":["広告動画の完全視聴1回あたりに発生するコスト","1件の成果（購入・登録など）獲得にかかった広告費用","広告がクリックされるたびに発生するクリック単価"],
+"ROI":["広告費に対して発生した売上高の割合を示す指標（ROAS）","最終目標達成に向けた重要な中間指標の達成度","顧客が生涯にわたって企業にもたらす利益の総額"],
+"ROAS":["投じた広告費に対してどれだけの利益（粗利）を生んだかの指標","1件のコンバージョンを獲得するためにかかった広告費用","広告を1,000回表示させるためにかかるコスト"],
+"リーチ":["ある期間内に広告が表示された延べ回数（重複あり）","1人のユーザーが同じ広告を視聴した平均回数","広告をクリックしてLPへ訪問したユーザーの合計数"],
+"LTV":["新規顧客1人を獲得するためにかかるコストの総額","特定期間における顧客1人あたりの平均購買金額","顧客が最初の購入から次の購入までにかかる平均期間"],
+"LP（ランディングページ）":["広告効果を測定するためにユーザー行動を分析する専用ページ","複数の広告バリエーションを比較するA/Bテスト用のページ","SEO対策として検索エンジン向けに最適化されたトップページ"],
+"運用型広告":["期間・掲載位置・表示回数をあらかじめ固定して購入する広告手法","メディアが持つ広告枠を入札形式でリアルタイムに取引する仕組み","広告代理店が媒体社から枠を一括購入し広告主に転売する手法"],
+"純広告":["広告主が予算・ターゲット・クリエイティブをリアルタイムで調整する手法","クリック課金型で成果に応じた費用が発生するパフォーマンス広告","ユーザーの行動データに基づき自動最適化される運用型の広告"],
+"KPI":["売上高や市場シェアなど事業全体の最終的な成功基準","広告費に対する売上高の割合を示す費用対効果の指標","顧客の購買行動を段階ごとに可視化したファネルの達成状況"],
+"KGI":["最終目標を達成するための各部門が管理すべき中間指標","広告キャンペーン全体の予算と期間を定めた目標管理指標","施策ごとの費用対効果を比較評価するための成果基準"],
+"グロス":["手数料（マージン）を除いた媒体社への実際の支払い原価","広告代理店が媒体社から受け取る出稿手数料のこと","広告主が代理店に支払う制作費用と出稿費用の合計"],
+"ネット":["手数料（マージン）を含めた広告出稿の総合計金額","広告代理店が広告主から受け取る仲介・制作手数料","広告効果を示す純粋な数値（クリック数・CV数など）"],
+"マージン":["媒体原価に手数料を上乗せして広告主に請求する総額","広告主が媒体社に直接支払う広告掲載の基本費用","代理店が取り扱う広告全体の売上高に占める純利益率"],
+"デモグラ":["ユーザーの価値観・趣味・ライフスタイルなど心理的特性","ユーザーの過去の購買履歴や閲覧行動など行動的特性","ユーザーが使用するデバイス・OS・ブラウザなど技術的属性"],
+"サイコグラフィック":["性別・年齢・居住地などの統計的・人口学的な属性","ユーザーの購買履歴・閲覧ログ・クリック行動などの行動データ","ユーザーが所属する職業・年収・学歴などの社会的属性"],
+"アトリビューション":["広告への接触から購買までの日数や回数を測定する分析手法","広告クリエイティブのA/Bテストで各バリエーションの効果を比較する手法","複数の媒体を横断してユーザーに同一広告を追跡表示する手法"],
+"クリック率（CTR）":["広告を見たユーザーのうち実際に購買などの成果に至った割合","広告費を広告から発生した売上高で割った収益効率の指標","動画広告を最後まで視聴したユーザーの割合（完全視聴率）"],
+"フリークエンシー（FQ）":["広告に接触したユニークユーザー数（到達人数）","1人のユーザーへの広告表示回数の上限（フリークエンシーキャップ）","同一クリエイティブを継続配信できる最大期間"],
+"フリークエンシーキャップ":["ユーザー1人あたりの広告の平均接触回数・接触頻度","特定期間内に広告を表示するユニークユーザー数の目標値","広告配信の1日あたりの最大インプレッション数を設定すること"],
+"ビュースルーコンバージョン（VTC）":["広告をクリックして直接サイトへ訪問しその場で購買した成果","SNSで広告をシェア・拡散したことで間接的に発生したCV","複数の広告接触経路を経てコンバージョンに至った複合的な成果"],
+"リターゲティング":["過去の購買履歴をもとに類似の商品をレコメンドする広告手法","特定のキーワードを検索したユーザーに対して広告を配信する手法","年齢・性別・居住地などのデモグラ属性でターゲットを絞る手法"],
+"オーディエンス拡張":["一度サイトに訪問したユーザーに繰り返し広告を表示する手法","ファーストパーティーデータをもとに購買確度の高い既存顧客に配信する手法","検索キーワードや閲覧コンテンツから興味関心を推定して配信する手法"],
+"完全視聴":["動画広告が画面の50%以上表示された状態で1秒以上再生されること","動画広告の再生開始から3秒以上視聴された状態","動画広告が自動再生でスタートし途中でスキップされなかった状態"],
+"CPCV":["広告が1,000回表示されるごとに発生する費用（CPM）","1件のコンバージョン獲得にかかった広告費用（CPA）","動画広告の再生開始1回あたりのコスト"],
+"インストリーム動画広告":["フィード形式のコンテンツの間にネイティブ形式で表示される動画広告","ページのサイドバーや記事下に静止画で表示されるバナー広告","ユーザーが能動的に検索した際に検索結果上部に表示される動画広告"],
+"インフィード型":["動画コンテンツの再生前・再生後に全画面で表示される動画広告","ページ上部や画面全体を覆うように表示されるインタースティシャル広告","スクロールに追随してページ下部に固定表示されるスティッキー広告"],
+"エンゲージメント":["広告に接触したユーザーが実際に購買・登録などを完了した数","特定期間に広告を視聴したユニークユーザーの合計数","広告のクリック数を広告の表示回数で割った比率"],
+"ブランドセーフティ":["ターゲット外のユーザーに広告が配信されていないか監視すること","アドフラウド（不正クリック）による無効なインプレッションを除外すること","競合他社の広告が自社広告の近くに表示されないよう制御すること"],
+"ファーストパーティーデータ":["外部のデータ事業者から購入した第三者のユーザーデータ","SNSプラットフォームが保有するユーザーの行動・属性データ","複数の企業が共同で収集・共有する業界横断型のユーザーデータ"],
+"アッパーファネル":["一定の認知・関心を持ち競合と比較検討しているユーザーへのアプローチフェーズ","購入意向が高まったユーザーに対し最終的な購買を促すフェーズ","購買後の顧客に継続利用やリピート購入を促すリテンションフェーズ"],
+"ミドルファネル":["商品・サービスをまだ知らない潜在顧客に認知させる最初のフェーズ","購入意向が高いユーザーに購買を後押しするクロージングのフェーズ","既存顧客のロイヤリティを高めアップセルを促すフォローアップフェーズ"],
+"ローワーファネル":["商品・サービスをまだ知らない潜在顧客に認知を広げるフェーズ","一定の認知・関心を持ち購入候補として比較検討しているフェーズ","購入した顧客に継続利用やSNSでの口コミ拡散を促すフェーズ"],
+"アップセル":["購入した顧客に関連する別カテゴリの商品を追加購入させる手法","購入意欲のある顧客に期間限定の割引を提示して即決を促す手法","既存顧客に定期購入プランへの切り替えを促す営業手法"],
+"クロスセル":["既存顧客に現在より上位グレードの商品への乗り換えを勧める手法","購入完了後に同一商品の追加購入を割引価格で提案する手法","顧客の解約を防ぐために代替プランやダウングレードを提案する手法"],
+"オウンドメディア":["費用を支払って他社媒体やSNS広告枠に掲載するペイドメディア","ユーザーのSNS投稿や口コミなど自然発生的な第三者媒体","インフルエンサーや著名人に報酬を支払って情報を発信してもらう媒体"],
+"ABEMA":["サイバーエージェントが単独で運営するライブストリーミングサービス","テレビ朝日が独自に展開するインターネット動画配信サービス","ABCテレビとサイバーエージェントが共同で展開する動画サービス"],
+"リニア配信":["放送が終わった番組や限定コンテンツを好きな時に視聴できるオンデマンド方式","会員ランクに応じて視聴できるコンテンツが変わる段階制の配信形式","ユーザーの視聴履歴に基づきおすすめ番組が自動再生される配信形式"],
+"ビデオ配信":["24時間365日、編成された番組表に沿って配信されるリアルタイム形式","有料会員のみが視聴できる広告なしのプレミアムコンテンツ配信","生放送のスポーツや音楽イベントをリアルタイムで視聴できる形式"],
+"ABEMAプレミアム":["広告つきで一部のプレミアムコンテンツを通常より低価格で視聴できるプラン","無料で視聴できるが広告が表示される基本プラン","特定番組のみをスポット購入できる単品課金プラン"],
+"広告つきABEMAプレミアム":["広告なし・追っかけ再生・ダウンロードができる月額有料会員サービス","無料会員向けに一部プレミアムコンテンツを期間限定で開放するプラン","法人向けに複数アカウントをまとめて契約できる法人プラン"],
+"ABEMA Ads":["ABEMAが提供するコンテンツ制作・番組スポンサーシップの総称","ABEMAのデータを活用した第三者媒体向けの広告配信サービス","ABEMAが代理店向けに提供する広告効果測定・分析ツールの総称"],
+"ABEMA Premium Ad (APA)":["インプレッション非保証で低額から詳細なターゲティングが可能な運用型CM","ホーム画面ファーストビューを1日1社独占して配信する企画広告","コンテンツの世界観と連動したオリジナルCM制作を含む企画広告"],
+"ABEMA Advanced Ad (AAA)":["視聴開始数が保証され人気番組に優先配信される予約型プレミアム商品","ABEMAのホーム画面を1日1社独占して配信するインパクトの高い広告","番組提供表示やCM制作などコンテンツと連動した企画型広告"],
+"オーディエンス指定":["広告を流す番組やジャンルを指定して興味関心でターゲティングする機能","サイト訪問ユーザーと類似性の高いユーザーを探し出してターゲティングする機能","一度番組を視聴したユーザーに絞って広告を再配信するリターゲティング機能"],
+"プログラム指定":["視聴者の年齢・性別・エリアなどのデモグラフィック属性でターゲティングする機能","過去に広告に接触したユーザーに同じ広告を再配信するターゲティング機能","類似ユーザーを自動で探し出して広告配信範囲を拡張するターゲティング機能"],
+"ABEMA Home Sponsored":["人気番組の前後に提供表示やオリジナルCMを配信する企画広告","ライブ中継の視聴を遮らずL字型で配信するスプリットスクリーン広告","ABEMAの検索画面上部に固定表示されるブランドキーワード広告"],
+"ABEMA Contents Sponsored":["ABEMAのホーム画面ファーストビューを1日1社が独占する企画広告","ライブ中継視聴中に画面を分割してCMを表示するライブスクリーン広告","ABEMAプレミアム会員向けに広告なしで提供されるスポンサーコンテンツ"],
+"WAU":["特定の期間内に重複を除いたアプリ訪問者の個別ユーザー数（UU）","1ヶ月間でABEMAを1回以上視聴したユニークユーザー数（MAU）","1日あたりのABEMAアクティブユーザー数（DAU）"],
+"UU（ユニークユーザー）":["1週間のアクティブユーザー数を示すABEMAの視聴規模指標（WAU）","同一ユーザーが複数回訪問した場合も含む延べ訪問回数（PV）","広告に接触したユーザーのうち実際に購買に至った人数"],
+"ABEMA Live Screen Ad":["コンテンツの世界観と連動したオリジナルCMや番組提供表示","ABEMAのホーム画面ファーストビューを独占する1日1社限定の広告","番組と番組の間の広告枠にスキップ不可で表示されるインストリーム広告"],
+"ABEMAサーベイ":["広告配信後のクリック率や完全視聴率を集計するパフォーマンスレポート","広告配信対象ユーザーの属性（年齢・性別・地域）を分析するダッシュボード","広告接触ユーザーと非接触ユーザーの行動差異を分析するリフト分析"],
+"ABEMA de DAZN":["スポーツ専門チャンネル「J SPORTS」のコンテンツをABEMA内で視聴できるサービス","NHKのスポーツ中継コンテンツをABEMAプラットフォームで視聴できるサービス","フジテレビのスポーツコンテンツをABEMAで独占配信するサービス"],
+"ABEMA de J SPORTS":["スポーツチャンネル「DAZN」の厳選コンテンツをABEMAで視聴できるサービス","テレビ朝日のスポーツコンテンツをABEMAで視聴できる連携サービス","スポーツ庁と連携してアマチュアスポーツを配信するABEMAの取り組み"],
+"TV Bridge":["テレビCMの放送後にABEMAで同じCMを追いかけ配信する仕組み","ABEMAの視聴データをテレビ局と共有してリーチ重複を可視化するサービス","テレビメーカーとABEMAが連携してスマートテレビ向けに広告を配信する仕組み"],
+"AdMarket":["ABEMA Adsの広告申し込み・素材入稿・レポート確認を一括管理する画面","ABEMAの広告効果を第三者調査会社が独立して計測するプラットフォーム","広告主がABEMAの視聴データをセルフサービスで分析できるツール"],
+"ビジネスマネージャー":["ABEMA Adsの出稿シミュレーション・クリエイティブ制作・運用代行を行うサービス","ABEMA広告の効果測定レポートを自動生成して配信するツール","広告代理店がABEMAの複数クライアントを一括管理できる代理店専用ポータル"],
+"VISIONS":["ABEMA Adsの広告配信状況やパフォーマンスを管理する広告主向け管理画面","ABEMAが広告主向けに提供するカスタムコンテンツ制作サービス","ABEMAの視聴データや広告効果を分析する社内向けのBIツール"],
+"のみどり配信":["特定の番組をCM枠ごと丸ごとスポンサードする番組協賛型の配信","オーディエンスデータを使わず全ユーザーに均一に配信するブロードキャスト型配信","リターゲティングを使わず新規ユーザーのみに限定して配信する方式"],
+"ノンスキッパブル広告":["動画再生後に一定時間が経過するとスキップボタンが表示される広告","フィード形式のコンテンツの間にネイティブ形式で表示される広告","ユーザーが任意のタイミングで閉じることができるオーバーレイ広告"],
+"1Q":["サイバーエージェントグループでは毎年1月〜3月を指す四半期","サイバーエージェントグループでは毎年4月〜6月を指す四半期","サイバーエージェントグループでは毎年7月〜9月を指す四半期"],
+"2Q":["サイバーエージェントグループでは毎年9月〜12月を指す四半期","サイバーエージェントグループでは毎年4月〜6月を指す四半期","サイバーエージェントグループでは毎年7月〜9月を指す四半期"],
+"3Q":["サイバーエージェントグループでは毎年1月〜3月を指す四半期","サイバーエージェントグループでは毎年9月〜12月を指す四半期","サイバーエージェントグループでは毎年7月〜9月を指す四半期"],
+"4Q":["サイバーエージェントグループでは毎年4月〜6月を指す四半期","サイバーエージェントグループでは毎年1月〜3月を指す四半期","サイバーエージェントグループでは毎年9月〜12月を指す四半期"],
+"当期":["現在進行中のQの次のQを指す言葉。「入りの受注」などの使い方をする","現在進行中のQの2つ先のQを指す言葉。「入り入りの受注」などの使い方をする","前期に完了した施策の実績を振り返る際に使う言葉"],
+"入り":["現在進行中のQを指す言葉。「当期受注」などの使い方をする","現在進行中のQの次の次のQを指す言葉。「入り入りの受注」などの使い方をする","前のQを指す言葉。「入りの着地」などの使い方をする"],
+"入り入り":["現在進行中のQの次のQを指す言葉。「入りの受注」などの使い方をする","現在進行中のQを指す言葉。「当期受注」などの使い方をする","3つ先のQを指す言葉。将来の中期的な受注見込みを示す際に使う"],
+"情報解禁":["ABEMAのプロダクトチームから営業に対して商品PKGが共有されること","番組スポンサーが視聴者向けにCMを初めて放映・公開すること","AbemaTVが広告代理店向けに新番組の協賛メニューを案内すること"],
+"リリース（ABEMA）":["AbemaTVから世の中に対して番組情報等の新情報を公開・告知すること","ABEMAが新機能や新サービスをアプリのアップデートとして配信すること","ABEMAが広告主向けに新しい広告商品の提案資料を送付すること"],
+"視聴（ABEMA）":["番組・CMを最後まで完全に視聴すること。途中離脱はカウントされない","番組・CMを3秒以上視聴した場合に1回とカウントする","番組・CMが画面の50%以上表示された状態で2秒以上再生されること"],
+"新しい未来のテレビ":["ABEMAが掲げる、若年層への圧倒的なリーチを実現するためのメディア戦略","ABEMAが掲げる、スポーツ・ニュース・エンタメの3本柱で成長するビジネスビジョン","ABEMAが掲げる、広告事業と有料会員事業を両輪で拡大するための経営方針"],
+};
+
+// ══════════════════════════════════════════
+//  ユーティリティ
+// ══════════════════════════════════════════
+// Google DriveのURLを直接表示可能な形式に変換
+function driveImgUrl(url){
+  if(!url)return '';
+  // uc?export=view&id= 形式
+  const m1=url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m1)return`https://drive.google.com/thumbnail?id=${m1[1]}&sz=w800`;
+  // /file/d/{id}/ 形式
+  const m2=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(m2)return`https://drive.google.com/thumbnail?id=${m2[1]}&sz=w800`;
+  return url;
+}
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function fmtDate(d){return`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;}
+
+// ── localStorage ──
+function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function loadUser(){return localStorage.getItem('quiz_user');}
+function saveUser(n){localStorage.setItem('quiz_user',n);}
+function clearUser(){localStorage.removeItem('quiz_user');}
+function histKey(n){return'quiz_hist2_'+n;}
+function weakKey(n){return'quiz_weak_'+n;}
+function memoKey(n){return'quiz_memo_'+n;}
+function loadAllHist(n){return lsGet(histKey(n))||[];}
+function saveHist(n,sessions){lsSet(histKey(n),sessions);}
+function loadWeak(n){return lsGet(weakKey(n))||[];}
+function saveWeak(n,arr){lsSet(weakKey(n),arr);}
+function loadMemos(n){return lsGet(memoKey(n))||{};}
+function saveMemos(n,obj){lsSet(memoKey(n),obj);}
+
+// ── 画面切替 ──
+let currentScreen='';
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.drawer-item').forEach(d=>d.classList.remove('active'));
+  const mi=document.getElementById('menu-'+id);
+  if(mi)mi.classList.add('active');
+  currentScreen=id;
+  window.scrollTo(0,0);
+}
+
+// ── ドロワー ──
+function toggleDrawer(){
+  const d=document.getElementById('drawer');
+  const o=document.getElementById('drawer-overlay');
+  const h=document.getElementById('hamburger-btn');
+  const open=d.classList.toggle('open');
+  o.classList.toggle('open',open);
+  h.classList.toggle('open',open);
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('open');
+}
+function navTo(screen){
+  if(screen==='admin'){showScreen('admin');return;}
+  if(!loadUser()&&screen!=='login'){showScreen('login');return;}
+  if(screen==='history')renderHistory();
+  if(screen==='glossary')renderGlossary();
+  if(screen==='complist')renderCompList();
+  if(screen==='home')renderHome();
+  showScreen(screen);
+}
+
+// ══════════════════════════════════════════
+//  ログイン
+// ══════════════════════════════════════════
+function doLogin(){
+  const name=document.getElementById('name-input').value.trim();
+  const err=document.getElementById('login-err');
+  if(!name){err.style.display='block';return;}
+  err.style.display='none';
+  saveUser(name);
+  updateDrawerUser(name);
+  renderHome();
+  showScreen('home');
+}
+function doLogout(){
+  clearUser();
+  closeDrawer();
+  document.getElementById('name-input').value='';
+  document.getElementById('drawer-user-info').style.display='none';
+  showScreen('login');
+}
+function updateDrawerUser(name){
+  document.getElementById('drawer-username').textContent=name;
+  document.getElementById('drawer-user-info').style.display='block';
+}
+
+// ══════════════════════════════════════════
+//  ホーム
+// ══════════════════════════════════════════
+function renderHome(){
+  const name=loadUser();
+  document.getElementById('home-username').textContent=name;
+  const sessions=loadAllHist(name);
+  const el=document.getElementById('home-prev-result');
+  if(!sessions.length){
+    el.innerHTML='<div class="no-history">まだテストを受けていません。<br>下のボタンからスタートしましょう！</div>';
+    return;
+  }
+  const last=sessions[sessions.length-1];
+  const pct=Math.round((last.score/last.total)*100);
+  const icon=pct===100?'🏆':pct>=80?'🎉':pct>=60?'👍':'📚';
+  el.innerHTML=`
+    <div style="font-size:12px;color:#aaa;margin-bottom:0.6rem;">${last.date}</div>
+    <div class="prev-result-summary">
+      <div class="prs-box"><div class="prs-num">${icon} ${last.score}</div><div class="prs-lbl">/ ${last.total}問正解</div></div>
+      <div class="prs-box"><div class="prs-num prs-c">${last.score}</div><div class="prs-lbl">正解</div></div>
+      <div class="prs-box"><div class="prs-num prs-w">${last.total-last.score}</div><div class="prs-lbl">不正解</div></div>
+      <div class="prs-box"><div class="prs-num">${pct}%</div><div class="prs-lbl">正答率</div></div>
+    </div>
+    ${last.wrong&&last.wrong.length>0?`<div style="font-size:12px;color:#888;margin-top:0.25rem;">📝 前回間違えた用語：${last.wrong.map(w=>`<strong>${w.term}</strong>`).join('、')}</div>`:'<div style="font-size:12px;color:#4caf50;">✅ 前回は全問正解！</div>'}
+  `;
+}
+
+// ══════════════════════════════════════════
+//  ① テスト履歴
+// ══════════════════════════════════════════
+function renderHistory(){
+  const name=loadUser();
+  const sessions=loadAllHist(name);
+  const el=document.getElementById('history-list');
+  if(!sessions.length){
+    el.innerHTML='<div class="empty-state">📭<br>まだテスト履歴がありません</div>';
+    return;
+  }
+  const reversed=[...sessions].reverse();
+  el.innerHTML=reversed.map((s,i)=>{
+    const pct=Math.round((s.score/s.total)*100);
+    const icon=pct===100?'🏆':pct>=80?'🎉':pct>=60?'👍':'📚';
+    const wrongHtml=s.wrong&&s.wrong.length>0
+      ?s.wrong.map(w=>{
+        // 競合理解の問題（q フィールドあり）か用語理解かで表示を切り替え
+        const isComp=!!w.q;
+        const qText=isComp?w.q:`「${w.term}」の説明として正しいものはどれですか？`;
+        const ansText=isComp?(w.correct||w.def):w.def;
+        return`<div class="hist-wrong-item">
+          <div style="font-size:11px;color:#f5c518;font-weight:700;margin-bottom:3px;">${isComp?'🏆 競合理解':'📚 用語理解'}</div>
+          <div class="hist-wrong-term" style="font-size:12px;font-weight:600;color:#888;margin-bottom:3px;">Q. ${qText}</div>
+          <div style="font-size:12px;color:#2e7d32;font-weight:600;">✅ A. ${ansText}</div>
+        </div>`;
+      }).join('')
+      :'<div style="font-size:12px;color:#4caf50;padding:0.5rem 0;">✅ 全問正解！</div>';
+    return`<div class="hist-session">
+      <div class="hist-session-header" onclick="toggleHistSession(${i})">
+        <div class="hist-session-left">
+          <div class="hist-session-icon">${icon}</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;">第${sessions.length-i}回テスト</div>
+            <div class="hist-session-meta">${s.date} ／ カテゴリ：${s.cat||'すべて'}</div>
+          </div>
+        </div>
+        <div class="hist-score-pill">${s.score}/${s.total}問 ${pct}%</div>
+      </div>
+      <div class="hist-session-body" id="hist-body-${i}">
+        <div class="hist-mini-stats">
+          <div class="hist-mini-box"><div class="n" style="color:#4caf50">${s.score}</div><div class="l">正解</div></div>
+          <div class="hist-mini-box"><div class="n" style="color:#e53935">${s.total-s.score}</div><div class="l">不正解</div></div>
+          <div class="hist-mini-box"><div class="n">${pct}%</div><div class="l">正答率</div></div>
+        </div>
+        ${s.wrong&&s.wrong.length>0?`<div class="hist-wrong-list-title">間違えた問題（${s.wrong.length}問）</div>`:''}
+        ${wrongHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleHistSession(i){
+  const b=document.getElementById('hist-body-'+i);
+  b.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+//  ② 用語一覧＋苦手タグ
+// ══════════════════════════════════════════
+let glossFilter='all';
+function setGlossFilter(f,btn){
+  glossFilter=f;
+  document.querySelectorAll('.gloss-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGlossary();
+}
+function toggleWeak(term){
+  const name=loadUser();
+  if(!name)return;
+  let weaks=loadWeak(name);
+  if(weaks.includes(term))weaks=weaks.filter(w=>w!==term);
+  else weaks.push(term);
+  saveWeak(name,weaks);
+  renderGlossary();
+}
+
+function toggleMemoInput(termId){
+  const wrap=document.getElementById('memo-wrap-'+termId);
+  wrap.classList.toggle('open');
+  if(wrap.classList.contains('open')){
+    wrap.querySelector('.memo-textarea').focus();
+  }
+}
+
+function saveMemo(termId,term){
+  const name=loadUser();
+  if(!name)return;
+  const ta=document.getElementById('memo-ta-'+termId);
+  const text=ta.value.trim();
+  const memos=loadMemos(name);
+  if(text)memos[term]=text;
+  else delete memos[term];
+  saveMemos(name,memos);
+  // UI更新
+  const toggleBtn=document.getElementById('memo-toggle-'+termId);
+  const preview=document.getElementById('memo-preview-'+termId);
+  const savedMsg=document.getElementById('memo-saved-'+termId);
+  if(text){
+    toggleBtn.textContent='✏️ メモを編集';
+    toggleBtn.classList.add('has-memo');
+    preview.textContent=text;
+    preview.style.display='block';
+  } else {
+    toggleBtn.textContent='✏️ メモを追加';
+    toggleBtn.classList.remove('has-memo');
+    preview.style.display='none';
+  }
+  savedMsg.classList.add('show');
+  setTimeout(()=>savedMsg.classList.remove('show'),1800);
+}
+
+function deleteMemo(termId,term){
+  const name=loadUser();
+  if(!name)return;
+  const memos=loadMemos(name);
+  delete memos[term];
+  saveMemos(name,memos);
+  document.getElementById('memo-ta-'+termId).value='';
+  saveMemo(termId,term);
+}
+
+function renderGlossary(){
+  const name=loadUser();
+  const weaks=loadWeak(name);
+  const memos=loadMemos(name);
+  const query=(document.getElementById('gloss-search')||{value:''}).value.trim().toLowerCase();
+  let terms=ALL_TERMS;
+  if(glossFilter==='広告基礎')terms=terms.filter(t=>t.cat==='広告基礎');
+  else if(glossFilter==='ABEMA用語')terms=terms.filter(t=>t.cat==='ABEMA用語');
+  else if(glossFilter==='weak')terms=terms.filter(t=>weaks.includes(t.term));
+  if(query)terms=terms.filter(t=>t.term.toLowerCase().includes(query)||t.def.toLowerCase().includes(query));
+  document.getElementById('gloss-count').textContent=`${terms.length}件表示中`;
+  const el=document.getElementById('glossary-list');
+  if(!terms.length){el.innerHTML='<div class="gloss-empty">該当する用語がありません</div>';return;}
+  el.innerHTML=terms.map((t,i)=>{
+    const isWeak=weaks.includes(t.term);
+    const termId='g'+i+'_'+t.term.replace(/[^a-zA-Z0-9]/g,'_');
+    const memo=memos[t.term]||'';
+    const hasMemo=!!memo;
+    return`<div class="gloss-item${isWeak?' is-weak':''}">
+      <div class="gloss-item-body">
+        <div class="gloss-term-row">
+          <span class="gloss-term">${t.term}</span>
+          <span class="gloss-cat${t.cat==='ABEMA用語'?' abema':''}">${t.cat}</span>
+          ${isWeak?'<span class="gloss-weak-tag">🔖 苦手</span>':''}
+        </div>
+        <div class="gloss-def">${t.def}</div>
+        <div class="memo-area">
+          ${hasMemo?`<div class="memo-preview" id="memo-preview-${termId}">${memo.replace(/</g,'&lt;')}</div>`:`<div class="memo-preview" id="memo-preview-${termId}" style="display:none"></div>`}
+          <button class="memo-toggle-btn${hasMemo?' has-memo':''}" id="memo-toggle-${termId}" onclick="toggleMemoInput('${termId}')">✏️ ${hasMemo?'メモを編集':'メモを追加'}</button>
+          <div class="memo-input-wrap" id="memo-wrap-${termId}">
+            <textarea class="memo-textarea" id="memo-ta-${termId}" placeholder="自分の言葉でメモを残しましょう（例：CPMと混同しやすい）">${memo.replace(/</g,'&lt;')}</textarea>
+            <div class="memo-footer">
+              <button class="memo-save-btn" onclick="saveMemo('${termId}','${t.term.replace(/'/g,"\\'")}')">保存</button>
+              ${hasMemo?`<button class="memo-delete-btn" id="memo-del-${termId}" onclick="deleteMemo('${termId}','${t.term.replace(/'/g,"\\'")}')">削除</button>`:`<button class="memo-delete-btn" id="memo-del-${termId}" onclick="deleteMemo('${termId}','${t.term.replace(/'/g,"\\'")}')">削除</button>`}
+              <span class="memo-saved-msg" id="memo-saved-${termId}">保存しました ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="weak-btn${isWeak?' active':''}" onclick="toggleWeak('${t.term.replace(/'/g,"\\'")}')">🔖</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  ③ 競合理解一覧
+// ══════════════════════════════════════════
+let compListFilter='all';
+function setCompListFilter(f,btn){
+  compListFilter=f;
+  document.querySelectorAll('#screen-complist .gloss-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCompList();
+}
+function compWeakKey(n){return'quiz_comp_weak_'+n;}
+function compMemoKey(n){return'quiz_comp_memo_'+n;}
+function loadCompWeak(n){return lsGet(compWeakKey(n))||[];}
+function saveCompWeak(n,arr){lsSet(compWeakKey(n),arr);}
+function loadCompMemos(n){return lsGet(compMemoKey(n))||{};}
+function saveCompMemos(n,obj){lsSet(compMemoKey(n),obj);}
+
+function toggleCompWeak(term){
+  const name=loadUser();
+  if(!name)return;
+  let weaks=loadCompWeak(name);
+  if(weaks.includes(term))weaks=weaks.filter(w=>w!==term);
+  else weaks.push(term);
+  saveCompWeak(name,weaks);
+  renderCompList();
+}
+function toggleCompMemoInput(termId){
+  const wrap=document.getElementById('cmemo-wrap-'+termId);
+  wrap.classList.toggle('open');
+  if(wrap.classList.contains('open')) wrap.querySelector('.memo-textarea').focus();
+}
+function saveCompMemo(termId,term){
+  const name=loadUser();
+  if(!name)return;
+  const ta=document.getElementById('cmemo-ta-'+termId);
+  const text=ta.value.trim();
+  const memos=loadCompMemos(name);
+  if(text)memos[term]=text; else delete memos[term];
+  saveCompMemos(name,memos);
+  const toggleBtn=document.getElementById('cmemo-toggle-'+termId);
+  const preview=document.getElementById('cmemo-preview-'+termId);
+  const savedMsg=document.getElementById('cmemo-saved-'+termId);
+  if(text){
+    toggleBtn.textContent='✏️ メモを編集'; toggleBtn.classList.add('has-memo');
+    preview.textContent=text; preview.style.display='block';
+  } else {
+    toggleBtn.textContent='✏️ メモを追加'; toggleBtn.classList.remove('has-memo');
+    preview.style.display='none';
+  }
+  savedMsg.classList.add('show');
+  setTimeout(()=>savedMsg.classList.remove('show'),1800);
+}
+function deleteCompMemo(termId,term){
+  const name=loadUser();
+  if(!name)return;
+  const memos=loadCompMemos(name);
+  delete memos[term];
+  saveCompMemos(name,memos);
+  document.getElementById('cmemo-ta-'+termId).value='';
+  saveCompMemo(termId,term);
+}
+
+function renderCompList(){
+  const name=loadUser();
+  const weaks=loadCompWeak(name);
+  const memos=loadCompMemos(name);
+  const query=(document.getElementById('comp-search')||{value:''}).value.trim().toLowerCase();
+  let terms=COMP_TERMS;
+  if(compListFilter==='weak') terms=terms.filter(t=>weaks.includes(t.term));
+  else if(compListFilter!=='all') terms=terms.filter(t=>t.cat.split(', ').includes(compListFilter)||t.cat===compListFilter);
+  if(query) terms=terms.filter(t=>t.q.toLowerCase().includes(query)||t.correct.toLowerCase().includes(query)||(t.exp&&t.exp.toLowerCase().includes(query)));
+  document.getElementById('comp-list-count').textContent=`${terms.length}件表示中`;
+  const el=document.getElementById('comp-list');
+  if(!terms.length){el.innerHTML='<div class="gloss-empty">該当する問題がありません</div>';return;}
+  el.innerHTML=terms.map((t,i)=>{
+    const isWeak=weaks.includes(t.term);
+    const termId='c'+i+'_'+t.term.replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
+    const memo=memos[t.term]||'';
+    const hasMemo=!!memo;
+    const catCls=t.cat.includes('ネトフリ')||t.cat.includes('アマプラ')?'abema':'';
+    return`<div class="gloss-item${isWeak?' is-weak':''}">
+      <div class="gloss-item-body">
+        <div class="gloss-term-row">
+          <span class="gloss-cat ${catCls}">${t.cat}</span>
+          ${isWeak?'<span class="gloss-weak-tag">🔖 苦手</span>':''}
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:5px;line-height:1.55;">Q. ${t.q}</div>
+        <div style="font-size:14px;font-weight:700;color:#2e7d32;margin-bottom:4px;">✅ A. ${t.correct}</div>
+        ${t.exp?`<div style="font-size:12px;color:#888;line-height:1.55;margin-bottom:4px;">💡 ${t.exp}</div>`:''}
+        ${t.img?`<div class="ref-img-wrap"><div class="ref-img-label">📷 参考画像</div><img class="ref-img" src="${driveImgUrl(t.img)}" alt="参考画像" onerror="this.parentElement.style.display='none'"></div>`:''}
+        <div class="memo-area">
+          ${hasMemo?`<div class="memo-preview" id="cmemo-preview-${termId}">${memo.replace(/</g,'&lt;')}</div>`:`<div class="memo-preview" id="cmemo-preview-${termId}" style="display:none"></div>`}
+          <button class="memo-toggle-btn${hasMemo?' has-memo':''}" id="cmemo-toggle-${termId}" onclick="toggleCompMemoInput('${termId}')">✏️ ${hasMemo?'メモを編集':'メモを追加'}</button>
+          <div class="memo-input-wrap" id="cmemo-wrap-${termId}">
+            <textarea class="memo-textarea" id="cmemo-ta-${termId}" placeholder="自分の言葉でメモを残しましょう">${memo.replace(/</g,'&lt;')}</textarea>
+            <div class="memo-footer">
+              <button class="memo-save-btn" onclick="saveCompMemo('${termId}','${t.term.replace(/'/g,"\\'")}')">保存</button>
+              <button class="memo-delete-btn" onclick="deleteCompMemo('${termId}','${t.term.replace(/'/g,"\\'")}')">削除</button>
+              <span class="memo-saved-msg" id="cmemo-saved-${termId}">保存しました ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="weak-btn${isWeak?' active':''}" onclick="toggleCompWeak('${t.term.replace(/'/g,"\\'")}')">🔖</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  クイズ
+// ══════════════════════════════════════════
+
+// 競合理解問題データ
+const COMP_TERMS=[
+  {term:"DSP",q:"広告主・代理店側の収益（効果）を最大化するためのプラットフォームを何と呼びますか？",correct:"DSP",choices:["SSP","DMP","RTB"],exp:"Demand-Side Platformの略で、広告主が効率的に在庫を買い付けるツールです。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/dsp.png"},
+  {term:"SSP",q:"媒体社側の収益を最大化するためのプラットフォームを何と呼びますか？",correct:"SSP",choices:["DSP","Ad Exchange","DMP"],exp:"Supply-Side Platformの略で、媒体社の利益を最大化するツールです。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/ssp.png"},
+  {term:"RTB",q:"DSPとSSPの間で1インプレッション単位でリアルタイムに行われるオークション取引を何と呼びますか？",correct:"RTB",choices:["PMP","Open Auction","Programmatic"],exp:"Real-Time Biddingの略です。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/rtb.png"},
+  {term:"DMP",q:"データが格納された「箱」の役割を果たし、様々な情報を統合管理するプラットフォームを何と呼びますか？",correct:"DMP",choices:["DSP","SSP","CMS"],exp:"Data Management Platformの略です。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/dmp.png"},
+  {term:"PMP",q:"特定の媒体の在庫を明確にし、媒体の価値に応じて限定された買い手に販売される取引形態を何と呼びますか？",correct:"PMP",choices:["Open Auction","PG","IO"],exp:"Private Market Placeの略です。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pmp.png"},
+  {term:"PG（Programmatic Guaranteed）",q:"PMPの中でも「インプレッション保証・固定単価」で取引される手法を何と呼びますか？",correct:"PG（Programmatic Guaranteed）",choices:["PD（Preferred Deal）","RTB","Open Auction"],exp:"在庫保証型（Guaranteed）のプログラマティック取引です。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pg.png"},
+  {term:"PD（Preferred Deal）",q:"PMPの中でも「インプレッション非保証・固定単価」で取引される手法を何と呼びますか？",correct:"PD（Preferred Deal）",choices:["PG","RTB","Open Auction"],exp:"優先取引（Preferred）ですが、配信量は保証されません。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pg.png"},
+  {term:"IO（純広告）",q:"アドテクノロジーを活用せず、広告主と媒体社が直接契約・入稿を行う従来の手法を何と呼びますか？",correct:"IO（純広告）",choices:["Programmatic","RTB","PMP"],exp:"Insertion Orderの略で、予約型の直接取引を指します。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pg.png"},
+  {term:"システム利用料や運用手数料",q:"プログラマティック広告における「マージン」と「フィー」の違いについて、一般的にフィーとは何を指しますか？",correct:"システム利用料や運用手数料",choices:["媒体原価","消費税","割引額"],exp:"DSPやSSPのプラットフォーム利用料などが該当します。",cat:"DSP/SSP",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/fee.png"},
+  {term:"TVer広告ポジション",q:"TVer広告において、プレロール・ミッドロール・ポストロールの掲載箇所を指定することは可能ですか？",correct:"不可（ランダムに配信される）",choices:["可能","プレロールのみ指定可能","ミッドロールのみ指定可能"],exp:"TVer広告のFAQにて「ポジション指定は不可」と明記されています。",cat:"TVer",img:""},
+  {term:"TVerキャンセル規定",q:"TVer広告のセルフサーブ用メニューで、市区町村単位の指定が可能なのはどのような場合ですか？",correct:"キャンセル日に拘わらずお申し込み金額の全額",choices:["掲載開始の7日前まで無料","キャンセル料は発生しない","半額負担"],exp:"ABEMAの共通規定として「お申し込み日以降のキャンセルは全額をいただく」と記載されています。",cat:"TVer",img:""},
+  {term:"TVerユーザー年齢層",q:"TVerのユーザー属性で、最も高い構成比を占めている年齢層はどこですか？",correct:"F35-49（女性35-49歳）",choices:["M20-34（男性20-34歳）","F15-19（女性15-19歳）","M50-64（男性50-64歳）"],exp:"女性の30-40代が非常に多いのが特徴です。",cat:"TVer",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/tver_user.png"},
+  {term:"TVer興味関心セグメント数",q:"TVer広告で「興味関心データ」として用意されているセグメント数はいくつですか？",correct:"17個",choices:["5個","100個","50個"],exp:"アンケートから取得した主要な興味関心カテゴリが用意されています。",cat:"TVer",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/tver_targeting.png"},
+  {term:"TVerセルフサーブ",q:"TVer広告の「セルフサーブ」とはどのような意味ですか？",correct:"広告会社が自ら管理画面で運用設定を行う形式",choices:["TVer社が全て運用を代行する形式","ユーザーが広告を選ぶ形式","無料の広告"],exp:"「自分たちで（Self）」運用するスタイルです。",cat:"TVer",img:""},
+  {term:"TVerHeadView価格",q:"TVerのファーストビュー広告であるTVerHeadViewの1日当たりの価格は？",correct:"300万円",choices:["500万円","300万円/平日、500万円/土日祝日、","400万円/平日、600万円/休日"],exp:"現在は300万円/日ですが、2026年7月以降は500万円/平日、600万円/土日祝イベントに料金改定されます。",cat:"TVer",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/tverfirst_price.png"},
+  {term:"ABEMAとTVerファーストビュー共通点",q:"ABEMAとTVerのファーストビュー広告の共通点は次のうちどれ？",correct:"CTV指定不可",choices:["60秒以上も配信可能","素材は1本まで。","曜日ごとで金額が分かれる。"],exp:"現在のTVer Head Viewは31秒以上の素材尺は不可。また全曜日で料金は一律。",cat:"TVer",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/tverfirst_menu.png"},
+  {term:"TVer運用型最低出稿金額",q:"TVerの運用型広告の最低出稿金額は？",correct:"71.5万円",choices:["0円","50万円","100万円"],exp:"",cat:"TVer",img:""},
+  {term:"TVerブランドリフト調査",q:"TVerが提供するブランドリフト調査に関して当てはまらないのはどれ？",correct:"配信終了直後にレポートは提供される。",choices:["300万円以上の配信で無償付帯。","設問数は1問。","TVerを視聴しているユーザーが対象。"],exp:"配信終了から1か月が基本納期。",cat:"TVer",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/tver_survey.png"},
+  {term:"PVA提供開始",q:"Amazon Prime Video広告（PVA）の日本での提供開始時期はいつですか？",correct:"2025年4月8日",choices:["2024年12月8日","2023年4月8日","2026年4月1日"],exp:"提供開始から1年以上が経過しています。",cat:"アマプラ",img:""},
+  {term:"PVA CTV視聴割合",q:"Prime Video広告（PVA）のコネクテッドTV（CTV）視聴割合は、他媒体と比較してどの程度とされていますか？",correct:"55%",choices:["30%","40%","75%"],exp:"資料の市場環境比較において、PVAのCTV比率は55%程度と圧倒的な数値が示されています。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_device.png"},
+  {term:"Amazon独自ターゲティングデータ",q:"PVAのターゲティングにおいて、ABEMAや他PFにはないAmazon独自の強みとなるデータは何ですか？",correct:"Amazon購買データや閲覧情報",choices:["番組の視聴履歴のみ","検索エンジンのキーワード","外部DMPの年収データ"],exp:"Amazonの1st party signalを使用した購買データやASINターゲティングが大きな特徴です。",cat:"アマプラ",img:""},
+  {term:"PVAスキップ可否",q:"Prime Video広告（PVA）で、広告をスキップすることは可能ですか？",correct:"不可（ノンスキッパブル）",choices:["可能（5秒後）","特定の番組のみ可能","一部可能"],exp:"15秒、30秒、60秒等のインストリーム動画はスキップ不可です。",cat:"アマプラ",img:""},
+  {term:"Best of Prime Video",q:"Prime Video広告（PVA）の「Best of Prime Video」メニューで対象となる作品はどう決まりますか？",correct:"マンスリーの視聴時間ランキング上位",choices:["Amazon社員の推薦","広告主の指定","ランダム"],exp:"日本で最も人気のあるコンテンツが自動的にパッケージされます。",cat:"アマプラ",img:""},
+  {term:"PREMIUM Sponsorships",q:"Prime Video広告の「PREMIUM Sponsorships」とはどのようなメニューですか？",correct:"特定コンテンツを1社または複数社でスポンサードするパッケージ",choices:["運用型のみ","CMなしのプラン","屋外広告"],exp:"特定の人気番組をジャックするような形式です。",cat:"アマプラ",img:"https://drive.google.com/thumbnail?id=1vopb3X04hhmaztW9A8M__2f8RXhGEY0N&sz=w800"},
+  {term:"PVA vs Netflix動画尺",q:"Prime Video広告のRotationalに対応している動画尺として正しいのはどれですか？（Netflixのミッドロールと比較）",correct:"PVA：15秒・30秒・60秒　Netflix ミッドロール：10秒・15秒・20秒・30秒・45秒・60秒・75秒",choices:["PVA：6秒・15秒・30秒　Netflix：15秒・30秒のみ","どちらも10秒・15秒・30秒・60秒で共通","PVA：15秒のみ Netflix：自由に設定可能"],exp:"PVAは15/30/60秒の3択。Netflixはプレロール10〜30秒、ミッドロールは最大75秒まで対応。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_menu.png"},
+  {term:"PVA広告フリーオプション",q:"Prime Video広告のサービス開始にあたって、既存のPrime会員が広告を見ずに視聴するにはどうすればよいですか？",correct:"既存プランに月額390円の「広告フリーオプション」を追加する",choices:["年間プランに切り替えれば自動的に広告フリーになる","新たなプレミアムプランに加入する必要がある（月額1,500円）","設定から無料で広告オフにできる"],exp:"2025年4月より既存のPrime会員プランが「広告付きプラン」となり、広告を見ずに視聴したい場合は月額390円の広告フリーオプションの追加が必要です。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_costup.png"},
+  {term:"PVA PG/PD最低出稿金額",q:"Prime Video広告（Rotational）のPGとPDの最低出稿金額の組み合わせとして正しいのはどれですか？",correct:"PG：500万円（グロス）、PD：300万円（グロス）",choices:["PG：300万円、PD：500万円","PGとPD両方とも500万円","PGとPD両方とも100万円"],exp:"PVA資料に「PG：500万円G、PD：300万円G」と明記されています。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_mincost.png"},
+  {term:"PVAブラックリストアップチャージ",q:"Prime Video広告のブラックリストターゲティングにおいて、アップチャージが発生するのはいつですか？",correct:"25作品以上を指定した場合",choices:["1作品以上指定した場合","50作品以上指定した場合","ブラックリスト指定自体は常時アップチャージが発生する"],exp:"資料に「25作品以上指定する場合アップチャージが加算される」と記載。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_upcharge.png"},
+  {term:"PVAプレロールのみ配信",q:"Prime Video広告において「プレロールのみ配信（ミッドロール除外）」は、PGとPDのどちらで利用できますか？",correct:"PG（Programmatic Guaranteed）のみ",choices:["PD（Preferred Deal）のみ","PGとPD両方","どちらでも利用不可"],exp:"資料に「Pre-rollのみ配信：PGのみ利用可能、PDでは利用不可」と明記。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_preroll.png"},
+  {term:"PVA Customターゲティング",q:"Prime Video広告のCustomターゲティング（リタゲ・広告主1stパーティデータ・AMC生成セグメント）について正しいのはどれですか？",correct:"PD（Preferred Deal）のみ利用可能",choices:["PG（Programmatic Guaranteed）のみ利用可能","PGとPD両方で利用可能","Direct IOのみ利用可能"],exp:"CustomターゲティングはPDのみ利用可能で、PGでは利用できません。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_targething.png"},
+  {term:"PVA PDアップチャージ",q:"PVAのPDにおいて、追加ターゲティングによるアップチャージが発生するのはどれ？",correct:"ジャンル指定",choices:["デモグラ指定","エリア指定","デバイス指定"],exp:"",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_upcharge.png"},
+  {term:"PVAデモグラデータ社数",q:"Prime Video広告のデモグラターゲティングは何社のデータを活用していますか？",correct:"3社（Audience One・Intimate Merger・Amazon自社）",choices:["1社（Amazon自社のみ）","2社（Audience One・Intimate Merger）","5社以上の外部データを活用"],exp:"PVAのデモグラはAudience One・Intimate Merger・Amazon自社の3種のデータ基盤から構成されています。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_demogura.png"},
+  {term:"PVA PG/PD配信単価",q:"PVAのPG＆PDにおける配信単価の組み合わせは？",correct:"2.6円～/PG、2.5円～/PD",choices:["ともに、2.0円～","ともに3.0円～","1.8円～/PG、1.5円/PD"],exp:"",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_tannka.png"},
+  {term:"3媒体ノンスキッパブル比較",q:"Netflix・Prime Video・ABEMAの3媒体において、動画広告はすべてノンスキッパブルですか？",correct:"すべてノンスキッパブルである",choices:["NetflixのみスキップできるAdvertise広告がある","Prime VideoはスキップできるTrueView方式","ABEMAのみスキップ可能"],exp:"3媒体ともノンスキッパブル動画広告を採用しており、広告完了率が高い点が共通の強みです。",cat:"アマプラ",img:""},
+  {term:"Netflix PMP vs PVA PD共通点",q:"NetflixのPMPとPrime VideoのPD（Preferred Deal）の共通点として正しいのはどれですか？",correct:"どちらもCPMが固定でインプレッション非保証の運用型",choices:["どちらもインプレッション保証型","どちらもDirect IOと同一条件","どちらもスポンサーシップ型広告にのみ対応"],exp:"NetflixのPMPとPVAのPDはともに「固定CPM・インプレッション非保証・運用型」という特徴が共通しています。",cat:"アマプラ",img:""},
+  {term:"PVA vs Netflixブランドセーフティ",q:"Prime VideoのブランドセーフティはNetflixの「センシティブコンテンツブロック」と比較してどのような特徴がありますか？",correct:"PVAはレーティング・ジャンル・HDYオリジナルブラックリストの3重構造。Netflixは性描写・暴力等の6カテゴリーブロック",choices:["両媒体とも全く同じ仕組みを採用","Netflixのみブランドセーフティ対応、PVAは未対応","PVAは自社でブランドセーフティを担保できない"],exp:"PVAは3重構造。Netflixは6種のセンシティブカテゴリーブロックを採用と、アプローチが異なります。",cat:"アマプラ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/pva_buranndose-hu.png"},
+  {term:"Netflix ポーズ広告",q:"Netflix広告に存在する、視聴者が動画を一時停止した際に表示される広告メニューの名前は何ですか？",correct:"ポーズ広告（PAUSE ADS）",choices:["ストップ広告","スリープ広告","インフィード広告"],exp:"視聴中のブレイクタイムを活用して静止画を表示するメニューです。",cat:"ネトフリ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/nf_pose.png"},
+  {term:"Netflixシングルタイトルスポンサーシップ",q:"Netflixの「シングルタイトルスポンサーシップ」では、通常広告配信の何％分が無料付帯されますか？",correct:"50%",choices:["100%","20%","無料付帯はない"],exp:"資料のプラン詳細に「50%分無料付帯」と記載されています。",cat:"ネトフリ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/nf_single.png"},
+  {term:"Netflix ビューイングムード",q:"Netflix広告独自のターゲティングで、作品の感情的なトーンに基づいて配信する手法を何と呼びますか？",correct:"ビューイングムード（Viewing Mood）",choices:["エモーションターゲット","ジャンルセレクト","マインドセット配信"],exp:"視聴者の気分に合わせた独自のターゲティング手法です。",cat:"ネトフリ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/nf_mood.png"},
+  {term:"Netflix広告時間",q:"Netflixの広告付きプランにおいて、1時間あたりの広告表示時間は最大何分ですか？",correct:"4〜5分",choices:["15分","1分以下","7分～8分"],exp:"テレビCMよりも短く設定し、ユーザー体験を損なわないようにしています。",cat:"ネトフリ",img:""},
+  {term:"スポンサーシップ比較",q:"NetflixとABEMAを比較したとき、スポンサーシップ型広告（協賛広告）を持つのはどちらですか？",correct:"両方持っている（Netflix：シングルタイトルスポンサーシップ／ABEMA：プログラムマッチ等）",choices:["Netflixのみ","ABEMAのみ","どちらも持っていない"],exp:"Netflixは「シングルタイトルスポンサーシップ」、ABEMAは「今日好きパッケージ」など、両媒体ともコンテンツとの協賛型メニューを提供しています。",cat:"ネトフリ",img:""},
+  {term:"KANTARとABEMAサーベイ共通点",q:"NetflixのKANTARブランドリフト調査とABEMAサーベイ（無償付帯）の共通点として正しいのはどれですか？",correct:"どちらも最低出稿金額の条件があり、年齢・性別ターゲティングのみ対応",choices:["どちらも全ターゲティングで実施可能","どちらも出稿金額に関係なく無償で利用できる","どちらも第三者計測会社との連携は不要"],exp:"KANTARは最低800万円（NET）・年齢/性別ターゲティングのみ。ABEMAサーベイも同様に最低出稿条件があります。",cat:"ネトフリ",img:""},
+  {term:"ビューイングムードvsリニア配信",q:"NetflixのビューイングムードとABEMAのリニア配信の最大の違いは何ですか？",correct:"ビューイングムードは過去の視聴行動から感情・気分でターゲティング。リニアはリアルタイムのチャンネル視聴（テレビライク）に広告を配信",choices:["どちらも同じコンテクスチュアルターゲティングである","ABEMAのリニアはVODと同様の仕組み","ビューイングムードはデモグラ属性で絞り込む手法"],exp:"ビューイングムードはNetflix会員の視聴履歴から気分・意図を分析した独自ターゲティング。ABEMAのリニアはライブチャンネル配信形態です。",cat:"ネトフリ",img:"https://yamauchisoma-gif.github.io/abema-quiz/images/nf_mood.png"},
+  {term:"ライブ広告配信比較",q:"ABEMAとNetflixを比較したとき、「ライブ（生放送）コンテンツへの広告配信」が可能なのはどちらですか？",correct:"ABEMA（リニア配信形態で対応）",choices:["Netflix（ライブイベント配信に対応）","両方対応している","どちらも対応していない"],exp:"ABEMAはニュース・スポーツ等のリアルタイムチャンネル（リニア）配信に広告を配信できます。",cat:"ネトフリ",img:""},
+  {term:"ABEMA vs Netflix提案シーン",q:"ABEMAとNetflixを広告主に提案する際、それぞれが最も強みを発揮しやすいシーンとして正しいのはどれですか？",correct:"ABEMA：若年層・スポーツ・ライブ視聴へのリアルタイムリーチ／Netflix：プレミアム会員へのブランドセーフティの高い環境でのリーチ",choices:["ABEMAはシニア層、NetflixはZ世代が得意","どちらも全く同じ特徴を持つ","ABEMAはプレミアム・Netflixは低単価"],exp:"ABEMAは約3,400万MAUとライブ配信・若年層への強さが特徴。NetflixはノンスキッパブルなプレミアムOTT環境とデータ活用型のターゲティングが強みです。",cat:"ネトフリ",img:""},
+  {term:"アドレッサビリティ",q:"個人のデバイスやブラウザを識別し、特定のユーザーにターゲティングできる状態を何と呼びますか？",correct:"アドレッサビリティ",choices:["ビューアビリティ","アドフラウド","リーチ"],exp:"Cookieや広告ID等でユーザーを捕捉できる状態です。",cat:"媒体横断",img:""},
+  {term:"ビューアビリティ",q:"広告配信において、実際に人間が閲覧可能な状態にあるかどうかを示す指標を何と呼びますか？",correct:"ビューアビリティ",choices:["CTR","リーチ","インプレッション"],exp:"広告が表示されていても、スクロールで見られていない場合はカウントされません。",cat:"媒体横断",img:""},
+  {term:"アドフラウド",q:"広告費を不正に搾取する「広告詐欺」のことを何と呼びますか？",correct:"アドフラウド",choices:["ブランドセーフティ","ボットトラフィック","無効トラフィック"],exp:"ボットによる水増しインプレッションなどが該当します。",cat:"媒体横断",img:""},
+  {term:"アドレッサビリティの低下",q:"広告配信システムにおいて、Cookieや広告IDが減少することで起きる「ユーザーを特定できなくなる」現象を何と呼びますか？",correct:"アドレッサビリティの低下",choices:["ビューアビリティの低下","ブランドセーフティの欠如","アドフラウド"],exp:"ターゲティングや効果計測の精度が落ちる大きな課題です。",cat:"媒体横断",img:""},
+  {term:"1st Party Data",q:"媒体社が保有する、自社サービスの登録情報や行動履歴に基づいたデータを何と呼びますか？",correct:"1st Party Data",choices:["3rd Party Data","2nd Party Data","Open Data"],exp:"ABEMAやTVerなどが持つ独自のデータです。",cat:"媒体横断",img:""},
+  {term:"3rd Party Data",q:"媒体社以外の第三者が収集・販売しているオーディエンスデータを何と呼びますか？",correct:"3rd Party Data",choices:["1st Party Data","Zero Party Data","Primary Data"],exp:"Intimate Mergerなどのデータが該当します。",cat:"媒体横断",img:""},
+  {term:"共通IDソリューション",q:"Cookieが廃止された後の代替手段として注目される、メールアドレス等をハッシュ化したIDを何と呼びますか？",correct:"共通IDソリューション",choices:["1st Party Cookie","ボットID","匿名ID"],exp:"UID2.0などが代表例です。",cat:"媒体横断",img:""},
+  {term:"ポーズ広告提供媒体",q:"視聴を一時停止した際に表示される「ポーズ広告（静止画広告）」を提供しているのはどの媒体ですか？",correct:"Netflixのみ（2025年時点）",choices:["Netflix・ABEMA・Prime Video全媒体","ABEMAのみ","Prime VideoとNetflixの両方"],exp:"ポーズ広告は現状NetflixのDirect IOのみで提供されているプレミアムなフォーマットです。",cat:"媒体横断",img:""},
+  {term:"CTV視聴割合最高媒体",q:"Netflix・ABEMA・Prime Videoの3媒体を比較したとき、コネクテッドTV（CTV）での視聴割合が最も高いとされているのはどれですか？",correct:"Prime Video（約55%がCTV視聴）",choices:["Netflix","ABEMA","3媒体とも同程度"],exp:"PVAの資料によると、Prime Videoの視聴時間の約55%がCTVとされており、大画面・有音環境でのリーチという点で他媒体より優位とされています。",cat:"媒体横断",img:""},
+];
+
+let currentFilter='all', currentCompFilter='all';
+let currentQuizType='vocab'; // 'vocab' or 'competitor'
+let questions=[],current=0,score=0,answered=false,wrongItems=[];
+const TOTAL=15;
+
+// タブ切替
+function switchQuizTab(tab, btn){
+  currentQuizType=tab;
+  document.querySelectorAll('.quiz-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.quiz-tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function setFilter(cat,btn){
+  currentFilter=cat;
+  document.querySelectorAll('#tab-vocab .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const pool=cat==='all'?ALL_TERMS:ALL_TERMS.filter(t=>t.cat===cat);
+  document.getElementById('q-count-preview').textContent=`全 ${pool.length} 問からランダムに ${Math.min(TOTAL,pool.length)} 問出題されます`;
+}
+
+function setCompFilter(cat,btn){
+  currentCompFilter=cat;
+  document.querySelectorAll('#tab-competitor .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // カンマ区切りカテゴリ対応（例："アマプラ, ネトフリ"）
+  const pool=cat==='all'?COMP_TERMS:COMP_TERMS.filter(t=>t.cat.split(', ').includes(cat)||t.cat===cat);
+  document.getElementById('comp-count-preview').textContent=`全 ${pool.length} 問からランダムに ${Math.min(TOTAL,pool.length)} 問出題されます`;
+}
+
+function makeChoices(item, pool, isComp){
+  if(isComp){
+    return shuffle([item.correct, ...item.choices.slice(0,3)]);
+  }
+  const correct=item.def;
+  const custom=DISTRACTORS[item.term];
+  const wrongs=custom?shuffle(custom).slice(0,3):shuffle(pool.filter(p=>p.term!==item.term)).map(o=>o.def).slice(0,3);
+  return shuffle([correct,...wrongs.slice(0,3)]);
+}
+
+function startQuiz(type){
+  if(type) currentQuizType=type;
+  let pool, n;
+  if(currentQuizType==='competitor'){
+    const rawPool=currentCompFilter==='all'?COMP_TERMS:COMP_TERMS.filter(t=>t.cat.split(', ').includes(currentCompFilter)||t.cat===currentCompFilter);
+    n=Math.min(TOTAL,rawPool.length);
+    questions=shuffle(rawPool).slice(0,n).map(item=>({
+      item,
+      choices:makeChoices(item,rawPool,true),
+      correct:item.correct,
+      isComp:true
+    }));
+  } else {
+    pool=currentFilter==='all'?ALL_TERMS:ALL_TERMS.filter(t=>t.cat===currentFilter);
+    n=Math.min(TOTAL,pool.length);
+    questions=shuffle(pool).slice(0,n).map(item=>({
+      item,
+      choices:makeChoices(item,pool,false),
+      correct:item.def,
+      isComp:false
+    }));
+  }
+  current=0;score=0;answered=false;wrongItems=[];
+  showScreen('quiz');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=questions[current],n=questions.length;
+  document.getElementById('prog-fill').style.width=((current/n)*100)+'%';
+  document.getElementById('prog-label').textContent=`問題 ${current+1} / ${n}`;
+  document.getElementById('score-live').textContent=`正解 ${score} 問`;
+  document.getElementById('q-num').textContent=`第 ${current+1} 問`;
+  const catEl=document.getElementById('q-cat');
+  catEl.textContent=q.item.cat;
+  catEl.className='cat-badge'+(q.item.cat==='ABEMA用語'?' abema':'');
+  // 競合理解は問題文をそのまま表示、用語理解は用語名を強調
+  if(q.isComp){
+    document.getElementById('q-text').innerHTML=q.item.q;
+  } else {
+    document.getElementById('q-text').innerHTML=`<span class="q-term">「${q.item.term}」</span> の説明として正しいものはどれですか？`;
+  }
+  const labels=['A','B','C','D'];
+  const choicesEl=document.getElementById('choices');
+  choicesEl.innerHTML='';
+  q.choices.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.innerHTML=`<span class="choice-label">${labels[i]}</span><span>${c}</span>`;
+    btn.onclick=()=>selectAnswer(c,btn,q);
+    choicesEl.appendChild(btn);
+  });
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').style.display='none';
+}
+function selectAnswer(chosen,btn,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=chosen===q.correct;
+  if(isCorrect)score++;
+  else {
+    // 競合理解は問題文(q)も保存、用語理解はdef保存
+    wrongItems.push(q.isComp
+      ? {term:q.item.term, q:q.item.q, correct:q.item.correct, def:q.item.correct, cat:q.item.cat}
+      : q.item
+    );
+  }
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    b.disabled=true;
+    const text=b.querySelector('span:last-child').textContent;
+    if(text===q.correct)b.classList.add('correct');
+    else if(b===btn&&!isCorrect)b.classList.add('wrong');
+    else b.classList.add('reveal');
+  });
+  const fb=document.getElementById('feedback');
+  document.getElementById('fb-title').textContent=isCorrect?'正解！':'不正解';
+  // 競合理解は解説文、用語理解は定義文を表示
+  const expText = q.isComp
+    ? (isCorrect ? q.item.exp||q.item.correct : `正しい答え：<strong>${q.item.correct}</strong>${q.item.exp?'<br>'+q.item.exp:''}`)
+    : (isCorrect ? q.item.def : `正しい答え：<strong>${q.item.def}</strong>`);
+  // 画像表示（競合理解でimgがある場合）
+  const imgHtml = q.isComp && q.item.img
+    ? `<div class="ref-img-wrap"><div class="ref-img-label">📷 参考画像</div><img class="ref-img" src="${driveImgUrl(q.item.img)}" alt="参考画像" onerror="this.parentElement.style.display='none'"></div>`
+    : '';
+  document.getElementById('fb-body').innerHTML = expText + imgHtml;
+  fb.className='feedback '+(isCorrect?'show-correct':'show-wrong');
+  const nb=document.getElementById('next-btn');
+  nb.style.display='block';
+  nb.textContent=current+1<questions.length?'次の問題へ →':'結果を見る';
+}
+function nextQuestion(){current++;if(current>=questions.length)showResult();else renderQuestion();}
+
+function showResult(){
+  showScreen('result');
+  const n=questions.length,pct=Math.round((score/n)*100);
+  const icon=pct===100?'🏆':pct>=80?'🎉':pct>=60?'👍':'📚';
+  document.getElementById('result-icon').textContent=icon;
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=n;
+  document.getElementById('stat-correct').textContent=score;
+  document.getElementById('stat-wrong').textContent=n-score;
+  document.getElementById('stat-pct').textContent=pct+'%';
+  const msgs=[[100,'完璧です！全問正解、素晴らしい用語理解力です。'],[80,'とても良い結果です！苦手な用語を復習してみましょう。'],[60,'基礎は押さえられています。間違えた用語を重点的に確認しましょう。'],[0,'まだ伸びしろがあります！繰り返し問題を解いて定着させましょう。']];
+  document.getElementById('final-msg').textContent=msgs.find(([t])=>pct>=t)[1];
+  // 履歴保存（localStorage）
+  const name=loadUser();
+  if(name){
+    const sessions=loadAllHist(name);
+    sessions.push({score,total:n,date:fmtDate(new Date()),cat:currentFilter==='all'?'すべて':currentFilter,wrong:wrongItems.map(i=>({term:i.term,def:i.def,cat:i.cat}))});
+    saveHist(name,sessions);
+    // GAS（クラウド）にも保存
+    if(GAS_URL && GAS_URL !== 'YOUR_GAS_DEPLOY_URL_HERE'){
+      gasPost({
+        action:'saveResult',
+        userName:name,
+        score,total:n,
+        cat:currentFilter==='all'?'すべて':currentFilter,
+        wrong:wrongItems.map(i=>({term:i.term,def:i.def,cat:i.cat}))
+      }).catch(e=>console.error('GAS保存エラー:',e));
+    }
+  }
+  // 復習リスト
+  const reviewArea=document.getElementById('review-area');
+  if(wrongItems.length===0){
+    reviewArea.innerHTML='<div class="perfect-banner">🎉 全問正解！復習する問題はありません</div>';
+  } else {
+    let html=`<div class="review-section"><div class="review-title">📝 間違えた問題の復習（${wrongItems.length}問）</div>`;
+    wrongItems.forEach(item=>{html+=`<div class="review-item"><span class="review-cat-badge">${item.cat}</span><div class="review-term">「${item.term}」</div><div class="review-def-label">正しい意味</div><div class="review-def">${item.def}</div></div>`;});
+    html+='</div>';
+    reviewArea.innerHTML=html;
+  }
+}
+
+// ══════════════════════════════════════════
+//  初期化
+// ══════════════════════════════════════════
+(function init(){
+  // 問題数を動的にセット
+  document.getElementById('q-count-preview').textContent=`全 ${ALL_TERMS.length} 問からランダムに ${Math.min(TOTAL,ALL_TERMS.length)} 問出題されます`;
+  document.getElementById('comp-count-preview').textContent=`全 ${COMP_TERMS.length} 問からランダムに ${Math.min(TOTAL,COMP_TERMS.length)} 問出題されます`;
+  const name=loadUser();
+  if(name){
+    updateDrawerUser(name);
+    renderHome();
+    showScreen('home');
+  } else {
+    showScreen('login');
+  }
+})();
+</script>
+</body>
+</html>
